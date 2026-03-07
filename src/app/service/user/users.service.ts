@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
-import { Observable, share } from 'rxjs';
+import { Observable, of, share, delay } from 'rxjs';
 import { host } from "src/app/app.component";
 import { Indicator } from "../indicator-Evaluation/indicator.service";
 
@@ -13,40 +13,39 @@ export class UsersService {
   constructor(private http: HttpClient) { }
 
   getUsers(): Observable<User[]> {
-
-    return this.http.get<User[]>(this.url).pipe(share());
+    return of([
+      { id: 1, username: "admin", email: "admin@company.com", role: "ADMIN" },
+      { id: 2, username: "user", email: "user@company.com", role: "COLLECTOR" }
+    ]).pipe(delay(200), share());
   }
 
   RestUserP(id:number | undefined,np : string) {
-    return this.http.put<User>(`${this.url}/reset/${id}`,np).pipe(share());
+    return of(null).pipe(share());
   }
-
 
   setCollector(c: Collector){
-    return this.http.post(`${this.url}/collector`,c).pipe(share());
+    return of(c).pipe(share());
   }
- updateCollector(c: Collector){
-    return this.http.put(`${this.url}/collector`,c).pipe(share());
+  updateCollector(c: Collector){
+    return of(c).pipe(share());
   }
   getCollectors():Observable<Collector[]>{
-    return this.http.get<Collector[]>(`${this.url}/collector`).pipe(share())
-
+    return of([
+      { id: 1, collector: { id: 2, username: "user", email: "user@company.com", role: "COLLECTOR" }, indicator: [] }
+    ]).pipe(delay(200), share())
   }
 
   getCollector(id: number | undefined) {
-    return this.http.get<Collector>(`${this.url}/collector/${id}`).pipe(share())
+    return of({ id: 1, collector: { id: 2, username: "user", email: "user@company.com", role: "COLLECTOR" }, indicator: [] } as Collector).pipe(share())
   }
   deleteUser(user: User): Observable<User> {
-      return this.http.delete<User>(`${this.url}/${user.id}`).pipe(share());
-
+      return of(user).pipe(share());
     }
-
 
   private user$ : Observable<User> | undefined;
   createUser(newuser: User): Observable<User> {
-    return this.user$ = this.http.post<User>(this.url, newuser).pipe(share());
-
-
+    newuser.id = Math.floor(Math.random() * 1000);
+    return this.user$ = of(newuser).pipe(share());
   }
 }
 

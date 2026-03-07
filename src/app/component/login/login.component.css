@@ -1,0 +1,113 @@
+:root {
+  --primary-enterprise: #2563eb;
+  --bg-form: #ffffff;
+  --input-bg: #f8fafc;
+  --text-main: #1e293b;
+  --border-color: #e2e8f0;
+}
+
+.auth-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-form);
+}
+
+/* Left Visual Section */
+.auth-visual {
+  flex: 1.2;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.enterprise-logo-white {
+  height: 40px;
+  filter: brightness(0) invert(1);
+}
+
+.text-primary-light {
+    color: #60a5fa;
+}
+
+/* Glassmorphism Metric Card */
+.glass-metric {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: fit-content;
+}
+
+/* Right Form Section */
+.auth-form-section {
+  flex: 1;
+  background-color: #fff;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Modernized Inputs */
+.input-group-modern {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group-modern input {
+  width: 100%;
+  padding: 14px 14px 14px 45px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  transition: all 0.2s ease;
+}
+
+.input-group-modern input:focus {
+  outline: none;
+  border-color: var(--primary-enterprise);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.input-group-modern .icon {
+  position: absolute;
+  left: 16px;
+  color: #94a3b8;
+}
+
+.input-group-modern .toggle-icon {
+  position: absolute;
+  right: 16px;
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+/* Enterprise Button */
+.btn-enterprise-primary {
+  background: var(--primary-enterprise);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.btn-enterprise-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+/* Modern Error Alert */
+.alert-modern {
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ef4444;
+  font-size: 0.875rem;
+}

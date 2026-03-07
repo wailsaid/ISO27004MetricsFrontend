@@ -29,6 +29,7 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/custom-theme.scss",
+              "src/enterprise-theme.css",
               "src/styles.css"
             ],
             "scripts": [
@@ -96,6 +97,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/enterprise-theme.css",
               "src/styles.css"
             ],
             "scripts": []

@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Core Brand Colors */
+  --primary-enterprise: #1e40af; /* Deeper, richer blue */
+  --primary-light: #eff6ff;
+  --secondary-accent: #3b82f6;
+
+  /* Typography & Backgrounds */
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --bg-main: #f8fafc; /* Crisp slate background */
+  --bg-card: #ffffff;
+  
+  /* Layout & Borders */
+  --border-subtle: #e2e8f0;
+  --sidebar-bg-start: #0f172a;
+  --sidebar-bg-end: #1e293b;
+  
+  /* Elevations */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Global Reset & Typography */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  color: var(--text-main);
+  background-color: var(--bg-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure Angular component hosts behave as block elements for layout */
+app-side-bar, app-top-bar {
+  display: block;
+}
+
+#wrapper {
+  display: flex !important;
+  width: 100%;
+}
+
+#content-wrapper {
+  width: 100% !important;
+  overflow-x: hidden !important;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+/* Premium Layout Cards */
+.card-modern {
+  background: var(--bg-card);
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  overflow: hidden; /* For header radius */
+}
+
+/* Give interactive cards a lift */
+a.card-modern:hover, button.card-modern:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-4px);
+}
+
+.card-modern .card-header,
+.card-modern > .card-header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 1.25rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--text-main);
+}
+
+.card-modern .card-body {
+  padding: 1.5rem;
+}
+
+/* Enterprise Primary Button */
+.btn-enterprise-primary {
+  background-color: var(--primary-enterprise);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-enterprise-primary:hover {
+  background-color: var(--secondary-accent);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-enterprise-primary:active {
+  transform: translateY(0);
+}
+
+/* Modern Status Badges (Pills) */
+.badge-modern {
+  padding: 0.4em 0.85em;
+  font-weight: 600;
+  font-size: 0.75rem;
+  border-radius: 9999px; /* Pill shape */
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.badge-success-modern {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-danger-modern {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.badge-warning-modern {
+  background-color: #fef9c3;
+  color: #a16207;
+  border: 1px solid #fef08a;
+}
+
+.badge-info-modern {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+/* Premium Table Styling */
+.table-modern {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-modern thead th {
+  background: var(--bg-main);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1rem 1.5rem;
+  border-bottom: 2px solid var(--border-subtle);
+  border-top: none;
+}
+
+.table-modern tbody td {
+  padding: 1rem 1.5rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.table-modern tbody tr:hover td {
+  background-color: var(--primary-light);
+}
+
+.table-modern tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Form Inputs */
+.form-control-modern {
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  background-color: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control-modern:focus {
+  border-color: var(--secondary-accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+/* Glassmorphism Reused for complex overlays/login */
+.glass-metric {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-metric-dark {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Topbar enhancements */
+.topbar-modern {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-subtle) !important;
+  box-shadow: none !important;
+  height: 4.375rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Sidebar premium structural rules */
+.sidebar-modern {
+  width: 16rem !important; /* Fixed width for modern look */
+  min-height: 100vh;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 768px) {
+  .sidebar-modern {
+    width: 6.5rem !important;
+  }
+  .sidebar-modern .sidebar-brand {
+    margin: 1rem 0 !important;
+  }
+}
+
+/* Sidebar nav links */
+.sidebar-modern .nav-item .nav-link {
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+  transition: all 0.2s;
+  border-radius: 12px;
+  margin: 0.4rem 1rem;
+  padding: 0.8rem 1.25rem;
+  display: flex;
+  align-items: center;
+}
+.sidebar-modern .nav-item .nav-link i {
+  color: rgba(255, 255, 255, 0.5);
+  margin-right: 0.75rem;
+}
+
+.sidebar-modern .nav-item.active .nav-link,
+.sidebar-modern .nav-item .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.sidebar-modern .nav-item.active .nav-link i,
+.sidebar-modern .nav-item .nav-link:hover i {
+  color: #ffffff;
+}

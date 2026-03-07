@@ -1,10 +1,10 @@
-<div class="card shadow mb-4">
+<div class="card card-modern mb-4">
     <div class="card-header py-3 d-sm-flex align-items-center justify-content-between">
 
 
-        <h5 class="m-0 font-weight-bold text-primary">List of Departement</h5>
+        <h5 class="m-0 fw-bold" style="color: var(--text-main);">List of Departement</h5>
         <button data-bs-toggle="modal" data-bs-target="#appForm"
-            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+            class="d-none d-sm-inline-block btn btn-sm btn-enterprise-primary shadow-sm"><i
                 class="fas fa-plus fa-sm text-white-50"></i> Add Departement</button>
 
     </div>
@@ -116,7 +116,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button [disabled]="!myForm.valid" type="submit" form="addApp" class="btn btn-primary"
+                <button [disabled]="!myForm.valid" type="submit" form="addApp" class="btn btn-enterprise-primary"
                     data-bs-dismiss="modal">
                     <i class="fas fa-plus fa-sm text-white-50"></i> Add</button>
             </div>

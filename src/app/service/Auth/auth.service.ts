@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { share } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { share, delay } from 'rxjs/operators';
 import { host } from 'src/app/app.component';
 import { User } from '../user/users.service';
 @Injectable({
@@ -19,11 +20,18 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(request: AuthResquest) {
-    /*  authreq : AuthResquest ={ username, password }); */
-
-    return this.http.post<AuthResponse>(this.apiUrl, request).pipe(share());//.subscribe(data => {
-    //console.log(data);
-    // } );
+    // MOCK LOGIN FOR OFFLINE BACKEND
+    const dummyResponse: AuthResponse = {
+      token: "dummy-jwt-token-12345",
+      user: {
+        id: 1,
+        username: request.username,
+        role: "ADMIN",
+        fullName: "Admin User",
+        email: request.username
+      } as any
+    };
+    return of(dummyResponse).pipe(delay(500), share());
   }
 
   isAdmin(): boolean {

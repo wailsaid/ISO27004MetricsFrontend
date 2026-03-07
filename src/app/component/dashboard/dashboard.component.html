@@ -1,11 +1,10 @@
-
         <div class="col-xl-12 col-lg-12">
 
 
-            <div class="card shadow mb-4">
+            <div class="card card-modern mb-4 border-0">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h5 class="m-0 font-weight-bold text-primary">Dashboard</h5>
-                    <a *ngIf="authService.isAdmin()" (click)="downLoadReport()" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                    <h5 class="m-0 fw-bold" style="color: var(--text-main);">Dashboard</h5>
+                    <a *ngIf="authService.isAdmin()" (click)="downLoadReport()" class="btn btn-enterprise-primary"><i
                             class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
 
                 </div>
@@ -22,16 +21,16 @@
 
 
                         <div *ngFor="let eval of evaluations" class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
+                            <div class="card card-modern mb-4 h-100">
 
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">{{eval.indicator.name}}</h6>
+                                    <h6 class="m-0 fw-bold" style="color: var(--text-main);">{{eval.indicator.name}}</h6>
 
                                 </div>
                                 <div class="card-body">
 
-                                    <div class="d-flex justify-content-center mb-lg-2">
+                                    <div class="d-flex justify-content-center mb-lg-3">
 
                                         <h3
                                             class="indicatorValue bold indicator-status {{eval.status?.toLocaleLowerCase()}}">
@@ -39,25 +38,29 @@
 
                                     </div>
 
-                                    <h5><strong>Status: </strong>
-                                        <span class="status"
-                                            class="bold text-{{eval.status?.toLocaleLowerCase()}} ">{{eval.status}}</span>
+                                    <h5 class="mb-3 d-flex align-items-center gap-2"><strong>Status: </strong>
+                                        <span class="badge badge-modern"
+                                            [ngClass]="{
+                                                'badge-success-modern': eval.status === 'GOOD',
+                                                'badge-warning-modern': eval.status === 'TOLERABLE',
+                                                'badge-danger-modern': eval.status === 'BAD'
+                                            }">{{eval.status}}</span>
                                     </h5>
-                                    <h5><strong>Performance: </strong>
+                                    <h5 class="mb-4 d-flex align-items-center gap-2"><strong>Performance: </strong>
                                         <ng-container *ngIf="eval?.performance! >= 0;else down ">
-                                            <span class="text-good bold">
+                                            <span class="badge badge-modern badge-success-modern">
                                                 &#8593; {{eval.performance}}
                                             </span>
 
                                         </ng-container>
                                         <ng-template #down>
-                                            <span class="text-bad bold">
+                                            <span class="badge badge-modern badge-danger-modern">
 
                                                 &#8595; {{eval.performance}}
                                             </span>
                                         </ng-template>
                                     </h5>
-                                    <ul>
+                                    <ul class="text-muted list-unstyled mb-4">
                                         <li>
                                             <strong>Target Value:</strong> {{eval.indicator.targetValue}}
                                             ({{eval.indicator.valueUnit}})
@@ -68,16 +71,14 @@
                                             ({{eval.indicator.valueUnit}})
                                         </li>
                                     </ul>
-                                    <h6> <strong>Evaluation Date:</strong>
+                                    <h6 class="text-muted mb-2"> <i class="far fa-calendar-alt text-gray-400 me-2"></i> <strong>Evaluation Date:</strong>
                                         {{eval.evaluationDate.toString().substr(0,10)}}</h6>
-                                    <h6><strong>Next Evaluation Date:</strong>
+                                    <h6 class="text-muted mb-4"><i class="far fa-calendar-check text-gray-400 me-2"></i> <strong>Next Evaluation Date:</strong>
                                         {{eval.nextEvaluationDate!.toString().substr(0,10)}} </h6>
 
 
-                                    <div class="d-flex justify-content-between">
-                                        <span></span>
-
-                                        <a routerLink="/indicator/{{eval.indicator.id}}">Details ...</a>
+                                    <div class="d-flex justify-content-end mt-auto">
+                                        <a class="btn btn-outline-primary btn-sm rounded-pill px-3" routerLink="/indicator/{{eval.indicator.id}}">Details <i class="fas fa-arrow-right ml-1"></i></a>
                                     </div>
 
 
