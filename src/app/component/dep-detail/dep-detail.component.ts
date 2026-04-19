@@ -6,6 +6,7 @@ import { Departement, DepartementService } from 'src/app/service/depart/departem
 import { IndicatorService } from 'src/app/service/indicator-Evaluation/indicator.service';
 
 @Component({
+  standalone: false,
   selector: 'app-dep-detail',
   templateUrl: './dep-detail.component.html',
   styleUrls: ['./dep-detail.component.css']

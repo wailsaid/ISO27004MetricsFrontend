@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthResquest, AuthService } from 'src/app/service/Auth/auth.service';
 @Component({
+  standalone: false,
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
@@ -37,15 +38,18 @@ export default class LoginComponent implements OnDestroy {
   Picon: string = "fa-eye";
   passwordInput: string = "password";
 
+  fillDemo(username: string, password: string): void {
+    this.username = username;
+    this.password = password;
+  }
+
   toggleP() {
-    if (this.passwordInput === "password") {
-      this.passwordInput = "text";
-  this.Picon = "fa-eye-slash";
-
+    if (this.passwordInput === 'password') {
+      this.passwordInput = 'text';
+      this.Picon = 'fa-eye-slash';
     } else {
-      this.passwordInput = "password";
-  this.Picon = "fa-eye";
-
+      this.passwordInput = 'password';
+      this.Picon = 'fa-eye';
     }
   }
 }

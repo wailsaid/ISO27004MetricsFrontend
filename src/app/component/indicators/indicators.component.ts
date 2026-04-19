@@ -8,6 +8,7 @@ import { Collector, User, UsersService } from 'src/app/service/user/users.servic
 
 
 @Component({
+  standalone: false,
   selector: 'app-indicator',
   templateUrl: './indicators.component.html',
   styleUrls: ['./indicators.component.css'],

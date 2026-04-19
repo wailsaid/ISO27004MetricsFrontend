@@ -1,78 +1,90 @@
-<ul class="navbar-nav sidebar sidebar-modern accordion" id="accordionSidebar" style="background: linear-gradient(135deg, var(--sidebar-bg-start) 0%, var(--sidebar-bg-end) 100%) !important;">
-    <a class="sidebar-brand mt-4 mb-3 d-flex align-items-center justify-content-center" href="./">
-        <img src="../../assets/logo2.png" width="120rem" class="enterprise-logo-white" style="filter: brightness(0) invert(1);" alt="Brand Logo" />
+<ul class="navbar-nav sidebar sidebar-modern accordion" id="accordionSidebar">
+
+  <!-- Brand -->
+  <a class="sidebar-brand d-flex align-items-center justify-content-center py-4" href="./">
+    <img src="../../assets/logo2.png" width="110" class="enterprise-logo-white" alt="Brand Logo" />
+  </a>
+
+  <hr class="sidebar-divider-light mx-3">
+
+  <!-- MAIN NAV -->
+  <div class="sidebar-section-label">Main</div>
+
+  <li class="nav-item" [class.active]="isActive('dashboard') || currentRoute === '/'">
+    <a class="nav-link" routerLink="dashboard">
+      <i class="fas fa-fw fa-chart-pie"></i>
+      <span>Dashboard</span>
     </a>
-    <hr class="sidebar-divider my-0">
+  </li>
 
-    <li class="nav-item">
+  <li class="nav-item" [class.active]="isActive('indicator') && !isActive('indicator/')">
+    <a class="nav-link" routerLink="indicator">
+      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <span>Indicators</span>
+    </a>
+  </li>
 
-        <a class="nav-link" routerLink="dashboard">
-            <i class="fas fa-fw fa-chart-pie"></i>
-            <span>Dashboard</span></a>
+  <li class="nav-item" [class.active]="isActive('departement')">
+    <a class="nav-link" routerLink="departement">
+      <i class="fas fa-fw fa-building"></i>
+      <span>Departments</span>
+    </a>
+  </li>
+
+  <!-- Collector only -->
+  <ng-container *ngIf="authService.isCollector()">
+    <hr class="sidebar-divider-light mx-3">
+    <div class="sidebar-section-label">My Tasks</div>
+    <li class="nav-item" [class.active]="isActive('evaliation-task')">
+      <a class="nav-link" routerLink="evaliation-task">
+        <i class="fas fa-fw fa-clipboard-check"></i>
+        <span>Evaluation Tasks</span>
+      </a>
+    </li>
+  </ng-container>
+
+  <!-- Admin + Manager -->
+  <ng-container *ngIf="authService.isAdminOrManager()">
+    <hr class="sidebar-divider-light mx-3">
+    <div class="sidebar-section-label">Administration</div>
+
+    <li class="nav-item" [class.active]="isActive('apps')">
+      <a class="nav-link" routerLink="apps">
+        <i class="fas fa-fw fa-cubes"></i>
+        <span>Applications</span>
+      </a>
     </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-    <li class="nav-item">
-
-
-        <a class="nav-link" routerLink="indicator">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Indicators</span></a>
+    <li class="nav-item" [class.active]="isActive('user')">
+      <a class="nav-link" routerLink="user">
+        <i class="fas fa-fw fa-users-gear"></i>
+        <span>Users &amp; Roles</span>
+      </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" routerLink="departement">
-            <i class="fas fa-fw fa-building"></i>
-            <span>Departments</span></a>
-    </li>
-    <ng-container *ngIf="authService.isCollector()">
+  </ng-container>
 
-        <li class="nav-item">
-            <a class="nav-link" routerLink="evaliation-task">
-                <i class="fas fa-fw fa-tasks"></i>
-                <span>Evaliation Task</span></a>
-        </li>
+  <hr class="sidebar-divider-light mx-3 mt-auto">
 
-    </ng-container>
-
-    <ng-container *ngIf="authService.isAdmin()">
-
-        <li class="nav-item">
-            <a class="nav-link" routerLink="apps">
-                <i class="fas fa-fw fa-bars"></i>
-                <span>Applications</span></a>
-        </li>
-
-
-
-        <li class="nav-item">
-            <a class="nav-link" routerLink="user">
-                <i class="fas fa-fw fa-users"></i>
-                <span>Users</span></a>
-        </li>
-
-
-
-    </ng-container>
-
-    <hr class="sidebar-divider">
-
-
-    <li class="nav-item">
-
-
-        <a class="nav-link" (click)="logout()">
-            <i class="fas fa-fw fa-sign-out-alt"></i>
-            <span> Logout</span>
-        </a>
-    </li>
-
-
-    <hr class="sidebar-divider">
-
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+  <!-- User Profile Section -->
+  <div class="sidebar-profile" *ngIf="currentUser">
+    <div class="profile-avatar">{{getInitials(currentUser)}}</div>
+    <div class="profile-info">
+      <div class="profile-name">{{currentUser.fullName || currentUser.username}}</div>
+      <span class="profile-role-badge">{{authService.getRoleLabel()}}</span>
     </div>
+  </div>
 
+  <!-- Logout -->
+  <li class="nav-item">
+    <a class="nav-link nav-link-logout" (click)="logout()" style="cursor:pointer">
+      <i class="fas fa-fw fa-arrow-right-from-bracket"></i>
+      <span>Sign Out</span>
+    </a>
+  </li>
+
+  <!-- Collapse toggle -->
+  <div class="text-center d-none d-md-inline py-2">
+    <button class="rounded-circle border-0 sidebar-toggle-btn" id="sidebarToggle"></button>
+  </div>
 
 </ul>

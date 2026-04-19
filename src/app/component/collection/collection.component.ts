@@ -6,6 +6,7 @@ import { Evaluation, Indicator, IndicatorService } from 'src/app/service/indicat
 import { Collector, User, UsersService } from 'src/app/service/user/users.service';
 
 @Component({
+  standalone: false,
   selector: 'app-collection',
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.css']

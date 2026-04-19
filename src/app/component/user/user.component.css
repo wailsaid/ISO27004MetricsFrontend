@@ -1,0 +1,73 @@
+.page-header { padding: 0.5rem 0 0; }
+.page-title { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+
+/* Stats mini cards */
+.stat-mini-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px;
+  padding: 1rem 1.25rem; box-shadow: var(--shadow-sm);
+}
+.stat-mini-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.stat-mini-value { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+.stat-mini-label { display: block; font-size: .7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; }
+
+/* Tabs */
+.enterprise-tabs { display: flex; gap: .5rem; border-bottom: 2px solid var(--border-subtle); padding-bottom: 0; }
+.etab-btn {
+  background: none; border: none; padding: .6rem 1.25rem; font-size: .875rem; font-weight: 500;
+  color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; border-radius: 0; transition: all .2s;
+}
+.etab-btn:hover { color: var(--primary-enterprise); }
+.etab-btn.active { color: var(--primary-enterprise); border-bottom-color: var(--primary-enterprise); font-weight: 600; }
+
+/* User cell */
+.user-cell { display: flex; align-items: center; }
+.avatar-circle {
+  width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: .75rem; flex-shrink: 0;
+}
+
+/* Role badges */
+.role-badge { padding: .3em .75em; font-size: .7rem; font-weight: 700; border-radius: 9999px; text-transform: uppercase; letter-spacing: .04em; }
+.badge-role-admin     { background: #fee2e2; color: #b91c1c; }
+.badge-role-manager   { background: #fef3c7; color: #92400e; }
+.badge-role-collector { background: #dbeafe; color: #1d4ed8; }
+.badge-role-user      { background: #f3f4f6; color: #374151; }
+
+/* Status pill */
+.status-pill { display: inline-flex; align-items: center; gap: .4rem; font-size: .75rem; font-weight: 500; padding: .2em .65em; border-radius: 9999px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; }
+.status-active   { background: #dcfce7; color: #15803d; } .status-active .status-dot { background: #16a34a; }
+.status-inactive { background: #f3f4f6; color: #6b7280; } .status-inactive .status-dot { background: #9ca3af; }
+.status-suspended{ background: #fee2e2; color: #b91c1c; } .status-suspended .status-dot { background: #dc2626; }
+
+/* Roles tab */
+.role-card-item {
+  padding: 1rem; border-radius: 10px; cursor: pointer; transition: background .15s;
+  border: 2px solid transparent; margin: .25rem;
+}
+.role-card-item:hover { background: var(--primary-light); }
+.role-card-item.selected { border-color: var(--primary-enterprise); background: var(--primary-light); }
+
+/* Permission matrix */
+.permission-group-title { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: .6rem; }
+.permission-item {
+  font-size: .8rem; padding: .4rem .75rem; border-radius: 8px; border: 1px solid var(--border-subtle); color: var(--text-muted);
+  display: flex; align-items: center;
+}
+.permission-item.granted { color: #15803d; background: #f0fdf4; border-color: #bbf7d0; }
+.permission-item .fa-check-circle { color: #16a34a; }
+.permission-item .fa-times-circle { color: #d1d5db; }
+
+/* Enterprise Modal */
+.enterprise-modal { border-radius: 16px !important; border: none; }
+.enterprise-modal .modal-header { border-bottom: 1px solid var(--border-subtle); padding: 1.25rem 1.5rem; }
+.enterprise-modal .modal-footer { border-top: 1px solid var(--border-subtle); padding: 1rem 1.5rem; }
+
+/* Form labels */
+.form-label-modern { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin-bottom: .4rem; display: block; }
+.form-control-modern { border: 1px solid var(--border-subtle) !important; border-radius: 8px !important; padding: .55rem .9rem !important; font-size: .9rem !important; transition: border-color .2s, box-shadow .2s !important; }
+.form-control-modern:focus { border-color: var(--secondary-accent) !important; box-shadow: 0 0 0 3px rgba(59,130,246,.15) !important; outline: none !important; }
+
+/* Delete icon */
+.delete-icon-wrap { width: 56px; height: 56px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; margin: 0 auto; }

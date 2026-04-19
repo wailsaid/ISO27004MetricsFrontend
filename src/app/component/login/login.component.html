@@ -1,29 +1,55 @@
 <div class="auth-container d-flex">
+
+  <!-- Left visual panel -->
   <div class="auth-visual d-none d-lg-flex flex-column justify-content-between p-5">
     <div class="brand-header">
       <img src="../../../assets/logo2.png" alt="Logo" class="enterprise-logo-white">
     </div>
 
     <div class="visual-content text-white">
-      <h1 class="display-5 fw-bold mb-3">ISO 27004 <br><span class="text-primary-light">Compliance Intelligence.</span></h1>
+      <h1 class="display-5 fw-bold mb-3">ISO 27004<br>
+        <span class="text-primary-light">Compliance Intelligence.</span>
+      </h1>
       <p class="lead opacity-75">Transform raw security data into actionable governance metrics and real-time risk visibility.</p>
 
       <div class="glass-metric mt-5 p-4 d-flex align-items-center">
-         <div class="metric-icon me-3 text-info">
-            <i class="fa fa-shield-halved fa-2x"></i>
-         </div>
-         <div>
-            <small class="d-block opacity-50">Current Security Posture</small>
-            <span class="fs-4 fw-bold">94.2% Effective</span>
-         </div>
+        <div class="metric-icon me-3 text-info">
+          <i class="fa fa-shield-halved fa-2x"></i>
+        </div>
+        <div>
+          <small class="d-block opacity-50">Current Security Posture</small>
+          <span class="fs-4 fw-bold">94.2% Effective</span>
+        </div>
+      </div>
+
+      <!-- Demo accounts hint -->
+      <div class="demo-accounts-hint mt-4">
+        <p class="mb-2 opacity-60 small fw-semibold text-uppercase" style="letter-spacing:.06em">Demo Accounts</p>
+        <div class="demo-account-row" (click)="fillDemo('admin','admin')">
+          <span class="demo-role-badge demo-admin">Admin</span>
+          <span class="opacity-70 small">admin / admin</span>
+        </div>
+        <div class="demo-account-row" (click)="fillDemo('manager','manager')">
+          <span class="demo-role-badge demo-manager">Manager</span>
+          <span class="opacity-70 small">manager / manager</span>
+        </div>
+        <div class="demo-account-row" (click)="fillDemo('collector','collector')">
+          <span class="demo-role-badge demo-collector">Collector</span>
+          <span class="opacity-70 small">collector / collector</span>
+        </div>
+        <div class="demo-account-row" (click)="fillDemo('viewer','viewer')">
+          <span class="demo-role-badge demo-viewer">Viewer</span>
+          <span class="opacity-70 small">viewer / viewer</span>
+        </div>
       </div>
     </div>
 
     <div class="auth-footer text-white-50 small">
-      © 2026 Enterprise Security Portal. All rights reserved.
+      &copy; 2026 Enterprise Security Portal. All rights reserved.
     </div>
   </div>
 
+  <!-- Right form panel -->
   <div class="auth-form-section d-flex align-items-center justify-content-center p-4">
     <div class="form-wrapper">
       <div class="mb-5">
@@ -35,8 +61,8 @@
         <div class="mb-4">
           <label class="form-label fw-semibold small text-uppercase tracking-wider">Username</label>
           <div class="input-group-modern">
-            <i class="fa fa-envelope icon"></i>
-            <input type="text" name="username" [(ngModel)]="username" placeholder="name@company.com" required>
+            <i class="fa fa-user icon"></i>
+            <input type="text" name="username" [(ngModel)]="username" placeholder="your username" required>
           </div>
         </div>
 
@@ -59,4 +85,5 @@
       </form>
     </div>
   </div>
+
 </div>

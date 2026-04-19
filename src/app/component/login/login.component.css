@@ -111,3 +111,18 @@
   border-left: 4px solid #ef4444;
   font-size: 0.875rem;
 }
+
+/* Demo accounts */
+.demo-accounts-hint { margin-top: 1.5rem; }
+.demo-account-row {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .5rem .75rem; border-radius: 10px; cursor: pointer;
+  transition: background .15s; margin-bottom: .25rem;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+}
+.demo-account-row:hover { background: rgba(255,255,255,.1); }
+.demo-role-badge { font-size: .65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; padding: .2em .65em; border-radius: 9999px; min-width: 68px; text-align: center; }
+.demo-admin    { background: rgba(220,38,38,.25); color: #fca5a5; }
+.demo-manager  { background: rgba(217,119,6,.25); color: #fcd34d; }
+.demo-collector{ background: rgba(37,99,235,.3);  color: #93c5fd; }
+.demo-viewer   { background: rgba(107,114,128,.25);color: #d1d5db; }

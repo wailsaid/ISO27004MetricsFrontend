@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { App, AppsService } from 'src/app/service/apps/apps.service';
 @Component({
+  standalone: false,
   selector: 'app-apps',
   templateUrl: './apps.component.html',
   styleUrls: ['./apps.component.css']

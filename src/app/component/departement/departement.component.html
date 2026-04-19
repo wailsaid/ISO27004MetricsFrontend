@@ -1,125 +1,197 @@
-<div class="card card-modern mb-4">
-    <div class="card-header py-3 d-sm-flex align-items-center justify-content-between">
-
-
-        <h5 class="m-0 fw-bold" style="color: var(--text-main);">List of Departement</h5>
-        <button data-bs-toggle="modal" data-bs-target="#appForm"
-            class="d-none d-sm-inline-block btn btn-sm btn-enterprise-primary shadow-sm"><i
-                class="fas fa-plus fa-sm text-white-50"></i> Add Departement</button>
-
+<!-- Page Header -->
+<div class="page-header mb-4">
+  <div class="d-flex align-items-center justify-content-between">
+    <div>
+      <h4 class="page-title mb-1">Departments</h4>
+      <p class="text-muted mb-0 small">Organize your organization's structure and assign security responsibilities.</p>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Departement Name</th>
-                        <th></th>
-                        <th *ngIf="auths.isAdmin()"></th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <tr *ngFor="let dep of allDeps">
-                        <td>
-                            <div id="accordion">
-                                <a class="btn" data-bs-toggle="collapse" href="#collapse{{dep.id}}">
-                                    {{dep.name}}
-                                </a>
-                                <div id="collapse{{dep.id}}" class="collapse" data-bs-parent="#accordion">
-                                    <div class="card-body">
-                                        <ul>
-                                            <li *ngFor="let i of dep?.indicators" >
-                                                {{i.name}}
-
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <a routerLink="{{dep.id}}" class="btn btn-info btn-sm btn-icon-split">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-list"></i>
-                                </span>
-                                <span class="text">Details</span>
-                            </a>
-                        </td>
-                        <td *ngIf="auths.isAdmin()">
-                            <button type="button" class="btn btn-danger btn-sm btn-icon-split" data-bs-toggle="modal"
-                                [attr.data-bs-target]="'#deleteModal'+dep.id">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-trash"></i>
-                                </span>
-                                <span class="text">Delete</span>
-                            </button>
-                            <!-- Delete Modal -->
-                            <div class="modal fade" id="deleteModal{{dep.id}}" tabindex="-1"
-                                aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel">Confirm deletion</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete this departement?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancel</button>
-                                            <button (click)="deleteDep(dep)" type="button" class="btn btn-danger"
-                                                data-bs-dismiss="modal">Delete</button>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-
-                    </tr>
-
-                </tbody>
-            </table>
-
-
-        </div>
-
-    </div>
+    <button *ngIf="auths.isAdmin()" data-bs-toggle="modal" data-bs-target="#depForm"
+      class="btn btn-enterprise-primary">
+      <i class="fas fa-plus fa-sm me-1"></i> Add Department
+    </button>
+  </div>
 </div>
-<!-- Modal1 -->
-<div class="modal fade" id="appForm" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered ">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="ModalLabel">Add a Departement </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addApp" #myForm="ngForm" (ngSubmit)="addDep()">
-                    <div class="row">
-                        <div class="col-md-10">
-                            <div class="form-group form-floating">
 
-                                <input type="text" class="form-control" placeholder="" ngModel name="depname"
-                                    [(ngModel)]="depname" id="name" required>
-                                <label for="name">Departements's name</label>
-
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button [disabled]="!myForm.valid" type="submit" form="addApp" class="btn btn-enterprise-primary"
-                    data-bs-dismiss="modal">
-                    <i class="fas fa-plus fa-sm text-white-50"></i> Add</button>
-            </div>
-        </div>
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-4">
+    <div class="dep-stat-card">
+      <div class="dep-stat-icon" style="background:#eff6ff;color:#1e40af"><i class="fas fa-building"></i></div>
+      <div><span class="dep-stat-value">{{allDeps.length}}</span><span class="dep-stat-label">Departments</span></div>
     </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="dep-stat-card">
+      <div class="dep-stat-icon" style="background:#f0fdf4;color:#15803d"><i class="fas fa-users"></i></div>
+      <div><span class="dep-stat-value">{{totalMembers}}</span><span class="dep-stat-label">Total Members</span></div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="dep-stat-card">
+      <div class="dep-stat-icon" style="background:#fef9c3;color:#a16207"><i class="fas fa-chart-bar"></i></div>
+      <div><span class="dep-stat-value">{{totalIndicators}}</span><span class="dep-stat-label">Indicators Tracked</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Departments Grid -->
+<div class="row g-3">
+  <div *ngFor="let dep of allDeps" class="col-xl-4 col-lg-6">
+    <div class="card card-modern border-0 dep-card h-100">
+      <div class="card-body p-4">
+        <!-- Header -->
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="dep-icon-circle">
+              <i class="fas fa-building"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold mb-0">{{dep.name}}</h6>
+              <p class="text-muted mb-0" style="font-size:.75rem">Created {{dep.createdAt}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p class="text-muted small mb-3" style="min-height:2.5rem;line-height:1.5">
+          {{dep.description || 'No description available.'}}
+        </p>
+
+        <!-- Head -->
+        <div class="dep-head-row mb-3">
+          <i class="fas fa-user-tie text-muted me-2"></i>
+          <span class="small">
+            <strong>Head: </strong>
+            <span *ngIf="dep.headName && dep.headName !== 'Unassigned'" class="text-dark fw-semibold">{{dep.headName}}</span>
+            <span *ngIf="!dep.headName || dep.headName === 'Unassigned'" class="text-muted fst-italic">Unassigned</span>
+          </span>
+        </div>
+
+        <!-- Stats -->
+        <div class="dep-meta-row">
+          <div class="dep-meta-item">
+            <i class="fas fa-users text-primary me-1"></i>
+            <span class="fw-semibold">{{dep.memberCount ?? 0}}</span>
+            <span class="text-muted ms-1">members</span>
+          </div>
+          <div class="dep-meta-item">
+            <i class="fas fa-tachometer-alt text-warning me-1"></i>
+            <span class="fw-semibold">{{dep.indicatorCount ?? 0}}</span>
+            <span class="text-muted ms-1">indicators</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex gap-2 mt-3 pt-3 border-top">
+          <a routerLink="{{dep.id}}" class="btn btn-sm btn-outline-primary flex-fill">
+            <i class="fas fa-chart-line me-1"></i> View Details
+          </a>
+          <button *ngIf="auths.isAdmin()" class="btn btn-sm btn-outline-secondary"
+            data-bs-toggle="modal" [attr.data-bs-target]="'#editDepModal'+dep.id"
+            (click)="openEditDep(dep)" title="Edit">
+            <i class="fas fa-pen"></i>
+          </button>
+          <button *ngIf="auths.isAdmin()" class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal" [attr.data-bs-target]="'#deleteModal'+dep.id" title="Delete">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editDepModal{{dep.id}}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content enterprise-modal" *ngIf="editingDep">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="fas fa-pen me-2 text-primary"></i>Edit Department</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label-modern">Department Name</label>
+              <input type="text" class="form-control form-control-modern" [(ngModel)]="editingDep.name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label-modern">Description</label>
+              <textarea class="form-control form-control-modern" rows="2" [(ngModel)]="editingDep.description"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label-modern">Department Head</label>
+              <select class="form-select form-control-modern" [(ngModel)]="editingDep.headId">
+                <option [ngValue]="undefined">— Unassigned —</option>
+                <option *ngFor="let m of managers" [ngValue]="m.id">{{m.fullName || m.username}} ({{m.role}})</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-enterprise-primary" data-bs-dismiss="modal" (click)="saveEditDep()">
+              <i class="fas fa-save me-1"></i>Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal{{dep.id}}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content enterprise-modal">
+          <div class="modal-header border-0 pb-0">
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4 text-center">
+            <div class="delete-icon-wrap mb-3"><i class="fas fa-triangle-exclamation text-danger fa-2x"></i></div>
+            <h5 class="fw-bold">Delete Department?</h5>
+            <p class="text-muted">This will permanently remove <strong>{{dep.name}}</strong>. This cannot be undone.</p>
+          </div>
+          <div class="modal-footer justify-content-center border-0 pt-0">
+            <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+            <button (click)="deleteDep(dep)" data-bs-dismiss="modal" class="btn btn-danger px-4">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Department Modal -->
+<div class="modal fade" id="depForm" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content enterprise-modal">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-plus me-2 text-primary"></i>Add Department</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="addDepForm" #myForm="ngForm" (ngSubmit)="addDep()">
+          <div class="mb-3">
+            <label class="form-label-modern">Department Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-modern" placeholder="e.g. IT Security"
+              name="depname" [(ngModel)]="depname" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label-modern">Description</label>
+            <textarea class="form-control form-control-modern" rows="2"
+              placeholder="Brief description..." name="depDescription" [(ngModel)]="depDescription"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label-modern">Department Head</label>
+            <select class="form-select form-control-modern" name="depHeadId" [(ngModel)]="depHeadId">
+              <option [ngValue]="undefined">— Unassigned —</option>
+              <option *ngFor="let m of managers" [ngValue]="m.id">{{m.fullName || m.username}} ({{m.role}})</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button [disabled]="!myForm.valid" type="submit" form="addDepForm"
+          class="btn btn-enterprise-primary" data-bs-dismiss="modal">
+          <i class="fas fa-plus me-1"></i>Create Department
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

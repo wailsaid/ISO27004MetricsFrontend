@@ -1,0 +1,33 @@
+.page-header { padding: .5rem 0 0; }
+.page-title { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+
+.dep-stat-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px;
+  padding: 1rem 1.25rem; box-shadow: var(--shadow-sm);
+}
+.dep-stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.dep-stat-value { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+.dep-stat-label { display: block; font-size: .7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; }
+
+.dep-card { transition: box-shadow .25s, transform .25s; }
+.dep-card:hover { box-shadow: var(--shadow-lg) !important; transform: translateY(-3px); }
+
+.dep-icon-circle {
+  width: 42px; height: 42px; border-radius: 12px; background: var(--primary-light);
+  color: var(--primary-enterprise); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+}
+
+.dep-head-row { display: flex; align-items: center; font-size: .85rem; }
+.dep-meta-row { display: flex; gap: 1.5rem; font-size: .8rem; }
+.dep-meta-item { display: flex; align-items: center; gap: .25rem; }
+
+.enterprise-modal { border-radius: 16px !important; border: none; }
+.enterprise-modal .modal-header { border-bottom: 1px solid var(--border-subtle); padding: 1.25rem 1.5rem; }
+.enterprise-modal .modal-footer { border-top: 1px solid var(--border-subtle); padding: 1rem 1.5rem; }
+
+.form-label-modern { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin-bottom: .4rem; display: block; }
+.form-control-modern { border: 1px solid var(--border-subtle) !important; border-radius: 8px !important; padding: .55rem .9rem !important; font-size: .9rem !important; transition: border-color .2s, box-shadow .2s !important; }
+.form-control-modern:focus { border-color: var(--secondary-accent) !important; box-shadow: 0 0 0 3px rgba(59,130,246,.15) !important; outline: none !important; }
+
+.delete-icon-wrap { width: 56px; height: 56px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; margin: 0 auto; }

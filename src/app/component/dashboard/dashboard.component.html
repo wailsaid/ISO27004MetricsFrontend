@@ -1,99 +1,159 @@
-        <div class="col-xl-12 col-lg-12">
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color:var(--text-main)">Security Dashboard</h4>
+    <p class="text-muted mb-0 small">ISO 27004 Indicator Overview &mdash; {{authService.getCurrentUser()?.departmentName || 'All Departments'}}</p>
+  </div>
+  <button *ngIf="authService.isAdmin()" (click)="downLoadReport()" class="btn btn-enterprise-primary">
+    <i class="fas fa-file-arrow-down me-1"></i> Generate Report
+  </button>
+</div>
 
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#eff6ff;color:#1e40af">
+        <i class="fas fa-chart-bar fa-lg"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{totalIndicators}}</span>
+        <span class="kpi-label">Active Indicators</span>
+      </div>
+      <div class="kpi-trend kpi-trend-neutral"><i class="fas fa-minus"></i></div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#dcfce7;color:#15803d">
+        <i class="fas fa-shield-halved fa-lg"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{complianceScore}}%</span>
+        <span class="kpi-label">Compliance Score</span>
+      </div>
+      <div class="kpi-trend" [class.kpi-trend-up]="complianceScore >= 75" [class.kpi-trend-down]="complianceScore < 50" [class.kpi-trend-warn]="complianceScore >= 50 && complianceScore < 75">
+        <i class="fas" [class.fa-arrow-trend-up]="complianceScore >= 75" [class.fa-arrow-trend-down]="complianceScore < 50" [class.fa-minus]="complianceScore >= 50 && complianceScore < 75"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#fef9c3;color:#a16207">
+        <i class="fas fa-building fa-lg"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{totalDepartments}}</span>
+        <span class="kpi-label">Departments</span>
+      </div>
+      <div class="kpi-trend kpi-trend-neutral"><i class="fas fa-minus"></i></div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#f5f3ff;color:#7c3aed">
+        <i class="fas fa-users fa-lg"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-value">{{totalUsers}}</span>
+        <span class="kpi-label">System Users</span>
+      </div>
+      <div class="kpi-trend kpi-trend-neutral"><i class="fas fa-minus"></i></div>
+    </div>
+  </div>
+</div>
 
-            <div class="card card-modern mb-4 border-0">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h5 class="m-0 fw-bold" style="color: var(--text-main);">Dashboard</h5>
-                    <a *ngIf="authService.isAdmin()" (click)="downLoadReport()" class="btn btn-enterprise-primary"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+<!-- Status Summary -->
+<div class="row g-3 mb-4" *ngIf="evaluations.length > 0">
+  <div class="col-sm-4">
+    <div class="status-summary-card status-summary-good">
+      <div class="ss-count">{{goodCount}}</div>
+      <div class="ss-label"><i class="fas fa-circle-check me-1"></i>Good</div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="status-summary-card status-summary-warn">
+      <div class="ss-count">{{tolerableCount}}</div>
+      <div class="ss-label"><i class="fas fa-circle-exclamation me-1"></i>Tolerable</div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="status-summary-card status-summary-bad">
+      <div class="ss-count">{{badCount}}</div>
+      <div class="ss-label"><i class="fas fa-circle-xmark me-1"></i>Critical</div>
+    </div>
+  </div>
+</div>
 
-                </div>
-                <div class="card-body">
-
-                    <div class="row">
-
-
-                        <ng-container *ngIf="evaluations.length<1">
-                            <div class="d-flex justify-content-center bold">
-                                No Evalaution available at the moment.
-                            </div>
-                        </ng-container>
-
-
-                        <div *ngFor="let eval of evaluations" class="col-xl-4 col-lg-5">
-                            <div class="card card-modern mb-4 h-100">
-
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 fw-bold" style="color: var(--text-main);">{{eval.indicator.name}}</h6>
-
-                                </div>
-                                <div class="card-body">
-
-                                    <div class="d-flex justify-content-center mb-lg-3">
-
-                                        <h3
-                                            class="indicatorValue bold indicator-status {{eval.status?.toLocaleLowerCase()}}">
-                                            {{eval.value}}</h3>
-
-                                    </div>
-
-                                    <h5 class="mb-3 d-flex align-items-center gap-2"><strong>Status: </strong>
-                                        <span class="badge badge-modern"
-                                            [ngClass]="{
-                                                'badge-success-modern': eval.status === 'GOOD',
-                                                'badge-warning-modern': eval.status === 'TOLERABLE',
-                                                'badge-danger-modern': eval.status === 'BAD'
-                                            }">{{eval.status}}</span>
-                                    </h5>
-                                    <h5 class="mb-4 d-flex align-items-center gap-2"><strong>Performance: </strong>
-                                        <ng-container *ngIf="eval?.performance! >= 0;else down ">
-                                            <span class="badge badge-modern badge-success-modern">
-                                                &#8593; {{eval.performance}}
-                                            </span>
-
-                                        </ng-container>
-                                        <ng-template #down>
-                                            <span class="badge badge-modern badge-danger-modern">
-
-                                                &#8595; {{eval.performance}}
-                                            </span>
-                                        </ng-template>
-                                    </h5>
-                                    <ul class="text-muted list-unstyled mb-4">
-                                        <li>
-                                            <strong>Target Value:</strong> {{eval.indicator.targetValue}}
-                                            ({{eval.indicator.valueUnit}})
-                                        </li>
-
-                                        <li>
-                                            <strong>Acceptable Value:</strong> {{eval.indicator.acceptableValue}}
-                                            ({{eval.indicator.valueUnit}})
-                                        </li>
-                                    </ul>
-                                    <h6 class="text-muted mb-2"> <i class="far fa-calendar-alt text-gray-400 me-2"></i> <strong>Evaluation Date:</strong>
-                                        {{eval.evaluationDate.toString().substr(0,10)}}</h6>
-                                    <h6 class="text-muted mb-4"><i class="far fa-calendar-check text-gray-400 me-2"></i> <strong>Next Evaluation Date:</strong>
-                                        {{eval.nextEvaluationDate!.toString().substr(0,10)}} </h6>
-
-
-                                    <div class="d-flex justify-content-end mt-auto">
-                                        <a class="btn btn-outline-primary btn-sm rounded-pill px-3" routerLink="/indicator/{{eval.indicator.id}}">Details <i class="fas fa-arrow-right ml-1"></i></a>
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-
-
-
-                    </div>
-                </div>
-            </div>
+<!-- Evaluations Grid -->
+<div class="card card-modern border-0">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <h6 class="mb-0 fw-semibold">Latest Evaluations</h6>
+    <span class="badge bg-light text-muted border" style="font-size:.75rem">{{evaluations.length}} indicators</span>
+  </div>
+  <div class="card-body">
+    <div class="row g-3">
+      <ng-container *ngIf="evaluations.length < 1">
+        <div class="col-12 text-center py-5 text-muted">
+          <i class="fas fa-chart-bar fa-3x mb-3 d-block" style="opacity:.2"></i>
+          <p>No evaluations available at the moment.</p>
         </div>
+      </ng-container>
+
+      <div *ngFor="let eval of evaluations" class="col-xl-4 col-lg-6">
+        <div class="eval-card" [ngClass]="{
+          'eval-card-good': eval.status === 'GOOD',
+          'eval-card-warn': eval.status === 'TOLERABLE',
+          'eval-card-bad': eval.status === 'BAD'
+        }">
+          <div class="eval-card-header">
+            <h6 class="fw-semibold mb-0 flex-fill" style="font-size:.875rem">{{eval.indicator.name}}</h6>
+            <span class="badge badge-modern"
+              [ngClass]="{
+                'badge-success-modern': eval.status === 'GOOD',
+                'badge-warning-modern': eval.status === 'TOLERABLE',
+                'badge-danger-modern': eval.status === 'BAD'
+              }">{{eval.status}}</span>
+          </div>
+
+          <div class="eval-value-row">
+            <span class="eval-big-value" [ngClass]="{
+              'eval-val-good': eval.status === 'GOOD',
+              'eval-val-warn': eval.status === 'TOLERABLE',
+              'eval-val-bad': eval.status === 'BAD'
+            }">{{eval.value}}</span>
+            <span class="eval-unit text-muted ms-1">{{eval.indicator.valueUnit}}</span>
+
+            <span class="ms-auto">
+              <span *ngIf="eval?.performance! >= 0" class="badge badge-modern badge-success-modern">
+                &#8593; {{eval.performance}}
+              </span>
+              <span *ngIf="eval?.performance! < 0" class="badge badge-modern badge-danger-modern">
+                &#8595; {{eval.performance}}
+              </span>
+            </span>
+          </div>
+
+          <div class="eval-targets text-muted small mb-2">
+            <span><strong>Target:</strong> {{eval.indicator.targetValue}}{{eval.indicator.valueUnit}}</span>
+            <span class="mx-2">&bull;</span>
+            <span><strong>Min:</strong> {{eval.indicator.acceptableValue}}{{eval.indicator.valueUnit}}</span>
+          </div>
+
+          <div class="eval-dates text-muted" style="font-size:.75rem">
+            <span><i class="far fa-calendar-alt me-1"></i>{{eval.evaluationDate.toString().substr(0,10)}}</span>
+            <span class="mx-2">&bull;</span>
+            <span>Next: {{eval.nextEvaluationDate!.toString().substr(0,10)}}</span>
+          </div>
+
+          <div class="text-end mt-3">
+            <a class="btn btn-sm btn-outline-primary rounded-pill px-3"
+              routerLink="/indicator/{{eval.indicator.id}}">
+              Details <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
