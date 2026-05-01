@@ -1,0 +1,35 @@
+.sc-kpi-card { border-radius: 12px; padding: 20px 24px; text-align: center; }
+.sc-kpi-value { font-size: 2.2rem; font-weight: 800; }
+.sc-kpi-label { font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; }
+.score-green { background: #d1fae5; color: #065f46; }
+.score-amber { background: #fef3c7; color: #92400e; }
+.score-red   { background: #fee2e2; color: #991b1b; }
+
+.rag-pill { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: .75rem; font-weight: 700; }
+.rag-green { background: #d1fae5; color: #065f46; }
+.rag-amber { background: #fef3c7; color: #92400e; }
+.rag-red   { background: #fee2e2; color: #991b1b; }
+
+.domain-card { background: #fff; border-radius: 12px; padding: 16px 18px; border: 1px solid #e5e7eb; box-shadow: 0 1px 4px rgba(0,0,0,.06); transition: box-shadow .15s; }
+.domain-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+.domain-green { border-left: 4px solid #16a34a; }
+.domain-amber { border-left: 4px solid #d97706; }
+.domain-red   { border-left: 4px solid #dc2626; }
+.domain-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.domain-control { font-size: .75rem; color: #6b7280; font-weight: 600; }
+.domain-name { font-size: .95rem; font-weight: 700; color: #1f2937; margin-bottom: 10px; }
+.domain-bar-wrap { background: #f3f4f6; border-radius: 6px; height: 8px; margin-bottom: 8px; }
+.domain-bar { height: 8px; border-radius: 6px; transition: width .4s; }
+.bar-green { background: #16a34a; }
+.bar-amber { background: #d97706; }
+.bar-red   { background: #dc2626; }
+.domain-stats { display: flex; gap: 8px; font-size: .75rem; flex-wrap: wrap; }
+.stat-green { color: #16a34a; font-weight: 600; }
+.stat-amber { color: #d97706; font-weight: 600; }
+.stat-red   { color: #dc2626; font-weight: 600; }
+.stat-pct   { color: #6b7280; margin-left: auto; font-weight: 700; }
+
+.prog-badge { font-size: .75rem; padding: 4px 12px; border-radius: 10px; font-weight: 600; }
+.prog-active       { background: #d1fae5; color: #065f46; }
+.prog-under_review { background: #fef3c7; color: #92400e; }
+.prog-inactive     { background: #f3f4f6; color: #6b7280; }

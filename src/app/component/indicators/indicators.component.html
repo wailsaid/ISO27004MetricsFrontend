@@ -1,418 +1,252 @@
-    <div class="card card-modern mb-4">
-        <div class="card-header py-3 d-sm-flex align-items-center justify-content-between">
-
-
-            <h5 class="m-0 fw-bold" style="color: var(--text-main);">List of Cybersecurity indicators</h5>
-
-
-
-            <button *ngIf="this.authservice.isAdmin()" (click)="loadData()" data-bs-toggle="modal"
-                data-bs-target="#indicatorForm" class="d-none d-sm-inline-block btn btn-sm btn-enterprise-primary shadow-sm"><i
-                    class="fas fa-plus fa-sm text-white-50"></i> Add Indicator</button>
-
-        </div>
-        <div class="card-body">
-
-            <ng-container *ngIf="evals.length<1 && indicators.length<1">
-
-            </ng-container>
-            <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th *ngIf="this.authservice.isAdmin()"></th>
-                            <th>Name</th>
-                            <th>Value</th>
-                            <th>Performance</th>
-                            <th>Next Evaluation Date</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-
-
-
-                    <tr *ngFor="let e of evals">
-                        <td *ngIf="this.authservice.isAdmin()">
-                            <mat-checkbox (ngModelChange)="edit(e.indicator)"
-                                [(ngModel)]="e.indicator.checked"></mat-checkbox>
-                        </td>
-                        <td>
-                            {{e.indicator.name}}
-                        </td>
-                        <td>
-                            <span class="bold text-{{e.status?.toLocaleLowerCase()}}">
-                                {{e.value}}
-                            </span>
-                        </td>
-                        <td>
-                            <ng-container *ngIf="e?.performance! >= 0;else down ">
-                                <span class="text-good bold">
-                                    &#8593; {{e.performance}}
-                                </span>
-
-                            </ng-container>
-
-                        </td>
-                        <ng-template #down>
-                            <span class="text-bad bold">
-
-                                &#8595; {{e.performance}}
-                            </span>
-                        </ng-template>
-                        <td>
-                            {{e.nextEvaluationDate?.toString()?.substring(0,10)}}
-                        </td>
-
-                        <td>
-                            <a routerLink="{{e.indicator.id}}" class="btn btn-info btn-sm btn-icon-split">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-list"></i>
-                                </span>
-                                <span class="text">Details</span>
-                            </a>
-
-
-
-                        </td>
-                    </tr>
-
-                    <tr *ngFor="let indicator of indicators">
-                        <td *ngIf="this.authservice.isAdmin()"></td>
-                        <td>
-                            {{indicator.name}}
-                        </td>
-                        <td>
-                            N/A
-                        </td>
-                        <td>
-                            N/A
-                        </td>
-                        <td>
-                            -/-/-
-                        </td>
-
-                        <td>
-                            <a routerLink="{{indicator.id}}" class="btn btn-info btn-sm btn-icon-split">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-list"></i>
-                                </span>
-                                <span class="text">Details</span>
-                            </a>
-
-
-
-                        </td>
-                    </tr>
-
-
-
-
-
-
-                </tbody>
-            </table>
-
-
-        </div>
+<div class="card card-modern mb-4">
+  <div class="card-header py-3 d-sm-flex align-items-center justify-content-between">
+    <h5 class="m-0 fw-bold" style="color:var(--text-main)">Security Indicators</h5>
+    <div class="d-flex gap-2">
+      <a *ngIf="authservice.isAdminOrManager()" routerLink="/indicator-library"
+          class="btn btn-sm btn-outline-primary">
+        <i class="fas fa-book-open me-1"></i>Indicator Library
+      </a>
+      <button *ngIf="authservice.isAdmin()" (click)="loadData()"
+          data-bs-toggle="modal" data-bs-target="#indicatorForm"
+          class="btn btn-sm btn-enterprise-primary shadow-sm">
+        <i class="fas fa-plus fa-sm text-white-50 me-1"></i>Add Indicator
+      </button>
     </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th *ngIf="authservice.isAdmin()" style="width:40px"></th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Construct</th>
+            <th>Value</th>
+            <th>RAG Status</th>
+            <th>Trend</th>
+            <th>Frequency</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of evals">
+            <td *ngIf="authservice.isAdmin()">
+              <mat-checkbox (ngModelChange)="edit(e.indicator)" [(ngModel)]="e.indicator.checked"></mat-checkbox>
+            </td>
+            <td class="fw-semibold">{{ e.indicator.name }}</td>
+            <td class="small text-muted">{{ e.indicator.category }}</td>
+            <td>
+              <span *ngIf="e.indicator.constructId" class="construct-id-badge">{{ e.indicator.constructId }}</span>
+              <span *ngIf="!e.indicator.constructId" class="text-muted small">—</span>
+            </td>
+            <td class="fw-bold">{{ e.value }} <small class="text-muted">{{ e.indicator.valueUnit }}</small></td>
+            <td>
+              <span class="rag-pill" [ngClass]="getRagClass(e)">{{ getRagLabel(e) }}</span>
+            </td>
+            <td>
+              <span [ngClass]="getTrendClass(e)" class="fw-bold">{{ getTrendIcon(e) }}</span>
+            </td>
+            <td class="small text-muted">{{ e.indicator.collectionFrequency || e.indicator.frequency }}</td>
+            <td>
+              <a [routerLink]="[e.indicator.id]" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-chart-line me-1"></i>Details
+              </a>
+            </td>
+          </tr>
+
+          <!-- Indicators with no evaluations yet -->
+          <tr *ngFor="let indicator of indicators">
+            <td *ngIf="authservice.isAdmin()"></td>
+            <td class="fw-semibold">{{ indicator.name }}</td>
+            <td class="small text-muted">{{ indicator.category }}</td>
+            <td>
+              <span *ngIf="indicator.constructId" class="construct-id-badge">{{ indicator.constructId }}</span>
+              <span *ngIf="!indicator.constructId" class="text-muted small">—</span>
+            </td>
+            <td class="text-muted">N/A</td>
+            <td><span class="rag-pill rag-gray">NO DATA</span></td>
+            <td>—</td>
+            <td class="small text-muted">{{ indicator.collectionFrequency || indicator.frequency }}</td>
+            <td>
+              <a [routerLink]="[indicator.id]" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-chart-line me-1"></i>Details
+              </a>
+            </td>
+          </tr>
+
+          <tr *ngIf="evals.length === 0 && indicators.length === 0">
+            <td colspan="9" class="text-center py-5 text-muted">
+              <i class="fas fa-chart-bar fa-2x mb-2 d-block" style="opacity:.2"></i>No indicators found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 
-
-
-
-<div *ngIf="this.authservice.isAdmin()" class="modal fade" id="indicatorForm" tabindex="-1" aria-labelledby="ModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-fullscreen">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="ModalLabel">Add a CyberSecurity Indicator</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form  id="addIndicator" (ngSubmit)="addIndicator()" #myForm="ngForm">
-                    <mat-horizontal-stepper>
-
-
-
-
-                        <mat-step label="Indicator Details">
-                            <div class="row">
-                                <div class="col-md-6">
-
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="name"
-                                            [(ngModel)]="name" id="name" required>
-                                        <label for="name">Indicator's name</label>
-
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group form-floating">
-
-                                                <input type="text" class="form-control" placeholder="" name="type"
-                                                    [(ngModel)]="type" id="type" required>
-                                                <label for="type">Type</label>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group form-floating">
-
-                                                <input list="catid" type="text" class="form-control" placeholder=""
-                                                    name="category" [(ngModel)]="category" id="category" required>
-                                                <label for="category">Category</label>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="benefit"
-                                            [(ngModel)]="benefit" id="benefits" required>
-                                        <label for="benefits">Benefits</label>
-
-                                    </div>
-
-
-                                    <div class="form-group form-floating">
-
-                                        <textarea maxlength="1000" class="form-control" placeholder=""
-                                            name="description" [(ngModel)]="description" id="description" required
-                                            rows="5" cols="10"></textarea>
-                                        <label for="description">Description</label>
-
-                                    </div>
-
-                                    <div class="form-group form-floating">
-
-                                        <textarea maxlength="1000" class="form-control" placeholder=""
-                                            name="howtomeasure" [(ngModel)]="howtomeasure" id="measure" required
-                                            rows="5" cols="10"></textarea>
-                                        <label for="measure">How to measure</label>
-
-                                    </div>
-
-
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group form-floating">
-
-                                        <select id="frenquency" class="form-select" name="frequency"
-                                            [(ngModel)]="frequency">
-                                            <option value="monthly">Monthly</option>
-                                            <option value="quarterly">Quarterly</option>
-                                            <option value="annually">Annually</option>
-                                        </select>
-                                        <label for="frenquency">Frequency</label>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-
-                                            <div class="form-group form-floating">
-
-                                                <input min="0" type="number" class="form-control" placeholder=""
-                                                    name="target" [(ngModel)]="targetValue" id="target" required>
-                                                <label for="target">Target value</label>
-
-                                            </div>
-                                            <div class="form-group form-floating">
-
-                                                <input min="0" type="number" class="form-control" placeholder=""
-                                                    name="accept" [(ngModel)]="acceptableValue" id="accept" required>
-                                                <label for="accept">Acceptable value</label>
-
-                                            </div>
-
-                                        </div>
-                                        <div class="col-md-6">
-
-
-
-                                            <div class="form-group form-floating">
-                                                <select id="perf" class="form-select" name="peformence"
-                                                    [(ngModel)]="performance">
-                                                    <option value="asc">&#8593; Increment</option>
-                                                    <option value="desc">&#8595; Decrement</option>
-
-                                                </select>
-                                                <label for="perf">Performance Indicator</label>
-                                            </div>
-
-
-
-                                            <div class="form-group form-floating">
-                                                <select id="unit" class="form-select" name="valueUnit"
-                                                    [(ngModel)]="valueUnit">
-                                                    <option value="%">percentage </option>
-                                                    <option value="nomber">Number</option>
-                                                </select>
-                                                <label for="unit">Indicator Unit</label>
-                                            </div>
-
-
-
-                                        </div>
-                                    </div>
-
-
-
-
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="infoOwner"
-                                            [(ngModel)]="infoOwner" id="infoOwnwer" required>
-                                        <label for="infoOwnwer">Information Owner</label>
-
-                                    </div>
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="infoCollector"
-                                            [(ngModel)]="infoCollector" id="infoCollector" required>
-                                        <label for="infoCollector">Information Collector</label>
-
-                                    </div>
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="infoCustomer"
-                                            [(ngModel)]="infoCustomer" id="infoCustomer" required>
-                                        <label for="infoCustomer">Information Customer</label>
-
-                                    </div>
-
-
-                                    <button style="float: right;" type="button" mat-button matStepperNext>Next</button>
-                                </div>
-                            </div>
-                        </mat-step>
-
-                        <mat-step label="Related Entities">
-
-                            <div class="row stp2">
-
-                                <div class="col-md-4">
-                                    <h5>Applications concerned with this Indicator</h5>
-                                    <div class="card-body">
-
-                                        <div class="">
-
-                                            <div *ngFor="let app of listapp">
-
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="{{app.id}}"  (click)="addApp(app)" name="deps" value="{{app.id}}">
-                                                    <label class="form-check-label" for="{{app.id}}">  {{app.name}} </label>
-                                                  </div>
-
-
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="deplist">
-                                        <h5>Departments concerned with this Indicator</h5>
-                                        <div class="card-body">
-
-                                            <div *ngFor="let d of allDep">
-
-                                               <!--  <input name="deps" type="checkbox" (click)="addDep(d)" value="{{d.id}}">
-                                                <span>
-                                                    {{d.name}}
-                                                </span> -->
-
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="{{d.id}}"  (click)="addDep(d)" name="deps" value="{{d.id}}">
-                                                    <label class="form-check-label" for="{{d.id}}">  {{d.name}} </label>
-                                                  </div>
-
-                                            </div>
-
-                                        </div>
-
-
-                                    </div>
-
-                                </div>
-                                <div class="col-md-4">
-                                    <h5>Collector responsable for this Indicator</h5>
-
-
-
-                                        <div *ngFor="let r of allCollector">
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" (click)="setEvaluator(r)" id="{{r.id}}" name="optradio" value="{{r.id}}" required>
-                                                <label class="form-check-label" for="{{r.id}}">  {{r.collector.username}}</label>
-                                              </div>
-
-                                           <!--  <input name="apps"  type="radio" (click)="setEvaluator(r)" value="{{r.id}}"  required>
-                                            <span>
-                                                {{r.username}}
-                                            </span> -->
-
-
-                                        </div>
-
-                                </div>
-                                <div class=" col-md-4">
-
-                                    <button type="button" mat-button matStepperPrevious>Back</button>
-                                    <!-- <button type="button" mat-button matStepperNext>Next</button> -->
-                                </div>
-                            </div>
-                            <!-- Step 2 content here -->
-                        </mat-step>
-                    </mat-horizontal-stepper>
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button [disabled]="!hasrep" type="submit" form="addIndicator" class="btn btn-primary" data-bs-dismiss="modal"> <i
-                        class="fas fa-plus fa-sm text-white-50"></i> Add</button>
-
-            </div>
-        </div>
+<!-- Add Indicator Modal -->
+<div *ngIf="authservice.isAdmin()" class="modal fade" id="indicatorForm" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Security Indicator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body overflow-auto">
+        <form id="addIndicator" (ngSubmit)="addIndicator()" #myForm="ngForm">
+          <mat-horizontal-stepper>
+
+            <mat-step label="Basic Details">
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="name" [(ngModel)]="name" id="aname" required>
+                    <label for="aname">Indicator Name</label>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <input type="text" class="form-control" placeholder="" name="type" [(ngModel)]="type" id="atype">
+                        <label for="atype">Type</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <input list="catid" type="text" class="form-control" placeholder="" name="category" [(ngModel)]="category" id="acat">
+                        <label for="acat">Category</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <textarea class="form-control" placeholder="" name="description" [(ngModel)]="description" id="adesc" rows="3" style="height:80px"></textarea>
+                    <label for="adesc">Description</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <textarea class="form-control" placeholder="" name="howtomeasure" [(ngModel)]="howtomeasure" id="ameasure" rows="3" style="height:80px"></textarea>
+                    <label for="ameasure">Measurement Method</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="benefit" [(ngModel)]="benefit" id="abenefit">
+                    <label for="abenefit">Benefit</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <input type="number" class="form-control" placeholder="" name="target" [(ngModel)]="targetValue" id="atarget">
+                        <label for="atarget">Target (GREEN threshold)</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <input type="number" class="form-control" placeholder="" name="accept" [(ngModel)]="acceptableValue" id="aaccept">
+                        <label for="aaccept">Acceptable (AMBER threshold)</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <select class="form-select" name="performance" [(ngModel)]="performance" id="aperf">
+                          <option value="asc">↑ Higher is better</option>
+                          <option value="desc">↓ Lower is better</option>
+                        </select>
+                        <label for="aperf">Performance Direction</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <select class="form-select" name="valueUnit" [(ngModel)]="valueUnit" id="aunit">
+                          <option value="%">%</option>
+                          <option value="number">Number</option>
+                          <option value="score">Score</option>
+                          <option value="incidents">Incidents</option>
+                          <option value="days">Days</option>
+                        </select>
+                        <label for="aunit">Unit</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <select class="form-select" name="frequency" [(ngModel)]="frequency" id="afreq">
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="annually">Annually</option>
+                    </select>
+                    <label for="afreq">Collection Frequency</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="infoOwner" [(ngModel)]="infoOwner" id="aowner">
+                    <label for="aowner">Information Owner</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="infoCollector" [(ngModel)]="infoCollector" id="acollector">
+                    <label for="acollector">Information Collector</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="infoCustomer" [(ngModel)]="infoCustomer" id="acustomer">
+                    <label for="acustomer">Client for Measurement</label>
+                  </div>
+                  <button type="button" mat-button matStepperNext class="float-end">Next →</button>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step label="Related Entities">
+              <div class="row mt-3">
+                <div class="col-md-4">
+                  <h6>Applications</h6>
+                  <div *ngFor="let app of listapp" class="form-check">
+                    <input class="form-check-input" type="checkbox" [id]="'app'+app.id" (click)="addApp(app)">
+                    <label class="form-check-label" [for]="'app'+app.id">{{ app.name }}</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <h6>Departments</h6>
+                  <div *ngFor="let d of allDep" class="form-check">
+                    <input class="form-check-input" type="checkbox" [id]="'dep'+d.id" (click)="addDep(d)">
+                    <label class="form-check-label" [for]="'dep'+d.id">{{ d.name }}</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <h6>Responsible Collector</h6>
+                  <div *ngFor="let r of allCollector" class="form-check">
+                    <input type="radio" class="form-check-input" (click)="setEvaluator(r)" [id]="'col'+r.id" name="optradio" required>
+                    <label class="form-check-label" [for]="'col'+r.id">{{ r.collector.username }}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <button type="button" mat-button matStepperPrevious>← Back</button>
+              </div>
+            </mat-step>
+
+          </mat-horizontal-stepper>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button [disabled]="!hasrep" type="submit" form="addIndicator" class="btn btn-primary" data-bs-dismiss="modal">
+          <i class="fas fa-plus me-1"></i>Add Indicator
+        </button>
+      </div>
     </div>
+  </div>
 </div>
-
-
-
-
-
-
-
 
 <datalist id="catid">
-    <option value="Security policy"> Security policy</option>
-    <option value="Organization of information security"> Organization of information security</option>
-    <option value="Asset management"> Asset management</option>
-    <option value="Human resources security"> Human resources security</option>
-    <option value="Physical and environmental security"> Physical and environmental security</option>
-    <option value="Communications and operations management"> Communications and operations management</option>
-    <option value="Access control"> Access control</option>
-    <option value="Information systems acquisition, development, and maintenance"> Information systems acquisition,
-        development, and maintenance</option>
-    <option value="Information security incident management"> Information security incident management</option>
-    <option value="Business continuity management"> Business continuity management</option>
-    <option value="Compliance"> Compliance</option>
-    <option value="Cryptography"> Cryptography</option>
-    <option value="Operations security"> Operations security</option>
-    <option value="Network security management"> Network security management</option>
-    <option value="Information security risk assessment and treatment"> Information security risk assessment and
-        treatment</option>
-    <option value="Supplier relationships"> Supplier relationships</option>
-    <option value="System and application security"> System and application security</option>
-    <option value="Information security monitoring and review"> Information security monitoring and review</option>
+  <option value="Human resources security"></option>
+  <option value="Access control"></option>
+  <option value="Incident management"></option>
+  <option value="Physical and environmental security"></option>
+  <option value="System and application security"></option>
+  <option value="Monitoring and logging"></option>
+  <option value="Information security policy"></option>
+  <option value="Corrective and preventive actions"></option>
+  <option value="Supplier relationships"></option>
+  <option value="ISMS Governance"></option>
 </datalist>

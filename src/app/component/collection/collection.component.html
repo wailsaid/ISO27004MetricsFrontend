@@ -1,54 +1,104 @@
-<div class="card card-modern mb-4">
-    <div class="card-header py-3 d-sm-flex align-items-center justify-content-between">
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color:var(--text-main)">Data Collection Tasks</h4>
+    <p class="text-muted small mb-0">ISO 27004:2009 §8.3 — Collector Workflow &amp; Audit Trail</p>
+  </div>
+</div>
 
+<div *ngIf="!resp" class="card card-modern">
+  <div class="card-body text-center py-5">
+    <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+    <p class="text-muted">No collection assignments found for your account.</p>
+  </div>
+</div>
 
-        <h5 class="m-0 fw-bold" style="color: var(--text-main);">List of Cybersecurity indicators</h5>
-
-
-
-
-
-    </div>
-    <div class="card-body">
-
-        <ng-container>
-
-        </ng-container>
-        <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-
-                        <th>Name</th>
-
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let e of resp?.indicator">
-                        <td>
-                            {{e.name}}
-                        </td>
-
-
-
-
-                        <td>
-                            <a routerLink="/indicator/{{e.id}}" class="btn btn-info btn-sm btn-icon-split">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-list"></i>
-                                </span>
-                                <span class="text">Detail</span>
-                            </a>
-
-
-
-                        </td>
-                    </tr>
-
-
-                </tbody>
-            </table>
+<div *ngIf="resp">
+  <div class="row g-3" *ngIf="resp!.indicator && resp!.indicator.length > 0; else noInds">
+    <div class="col-xl-6 col-12" *ngFor="let ind of resp.indicator">
+      <div class="card card-modern task-card">
+        <div class="card-header py-3 d-flex align-items-center justify-content-between">
+          <div>
+            <h6 class="mb-0 fw-bold">{{ ind.name }}</h6>
+            <small class="text-muted">{{ ind.category }} · {{ ind.collectionFrequency || ind.frequency }}</small>
+          </div>
+          <div class="d-flex gap-2 align-items-center">
+            <span *ngIf="getLatestEval(ind.id!)" class="rag-pill rag-{{ getRagClass(getLatestEval(ind.id!)?.ragStatus) }}">
+              {{ getRagLabel(getLatestEval(ind.id!)?.ragStatus) }}
+            </span>
+            <span class="construct-badge-sm" *ngIf="ind.constructId">{{ ind.constructId }}</span>
+          </div>
         </div>
+        <div class="card-body">
+          <!-- Last measurement -->
+          <div *ngIf="getLatestEval(ind.id!)" class="last-eval-row mb-3">
+            <div class="last-eval-item">
+              <span class="last-eval-label">Last Value</span>
+              <span class="last-eval-value">{{ getLatestEval(ind.id!)?.value }} {{ ind.valueUnit }}</span>
+            </div>
+            <div class="last-eval-item">
+              <span class="last-eval-label">Date</span>
+              <span class="last-eval-value">{{ getLatestEval(ind.id!)?.evaluationDate?.toString()?.substring(0,10) }}</span>
+            </div>
+            <div class="last-eval-item">
+              <span class="last-eval-label">Verification</span>
+              <span class="verify-badge verify-{{ getLatestEval(ind.id!)?.verificationStatus?.toLowerCase() }}">{{ getLatestEval(ind.id!)?.verificationStatus }}</span>
+            </div>
+          </div>
+
+          <!-- Decision criteria reminder -->
+          <div class="dc-reminder mb-3">
+            <span class="dc-dot-sm dc-dot-green"></span>GREEN {{ ind.performance==='asc' ? '≥' : '≤' }} {{ ind.decisionCriteriaGreen ?? ind.targetValue }} {{ ind.valueUnit }}
+            <span class="mx-2 text-muted">·</span>
+            <span class="dc-dot-sm dc-dot-amber"></span>AMBER {{ ind.performance==='asc' ? '≥' : '≤' }} {{ ind.decisionCriteriaAmber ?? ind.acceptableValue }} {{ ind.valueUnit }}
+          </div>
+
+          <!-- Measurement method -->
+          <div class="meth-box mb-3">
+            <strong class="text-muted small">MEASUREMENT METHOD:</strong>
+            <span class="small"> {{ ind.howtomeasure }}</span>
+          </div>
+
+          <!-- Quick evaluate form -->
+          <div class="quick-eval-form">
+            <div class="row g-2 align-items-end">
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">New Value ({{ ind.valueUnit }})</label>
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="quickValues[ind.id!]"
+                  [name]="'val_'+ind.id" min="0" placeholder="Enter value">
+              </div>
+              <div class="col-md-8">
+                <label class="form-label small fw-bold">Collection Issues / Notes</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="quickIssues[ind.id!]"
+                  [name]="'iss_'+ind.id" placeholder="Optional — data source issues, anomalies, etc.">
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="quickConfirm[ind.id!]" [id]="'conf_'+ind.id" [name]="'conf_'+ind.id">
+                  <label class="form-check-label small" [for]="'conf_'+ind.id">I confirm this data was extracted from the designated source: <em>{{ ind.howtomeasure?.substring(0,60) }}</em></label>
+                </div>
+              </div>
+              <div class="col-12 d-flex justify-content-between align-items-center">
+                <a [routerLink]="['/indicator', ind.id]" class="btn btn-sm btn-outline-secondary">
+                  <i class="fas fa-chart-line me-1"></i>View Full History
+                </a>
+                <button class="btn btn-sm btn-success" [disabled]="!quickValues[ind.id!] || !quickConfirm[ind.id!]"
+                  (click)="quickEvaluate(ind)">
+                  <i class="fas fa-paper-plane me-1"></i>Submit Measurement
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <ng-template #noInds>
+    <div class="card card-modern">
+      <div class="card-body text-center py-5">
+        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+        <p class="text-muted">No indicators are assigned to you at this time.</p>
+      </div>
+    </div>
+  </ng-template>
 </div>

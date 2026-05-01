@@ -7,8 +7,6 @@ import { DataTablesModule } from "angular-datatables";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from "@angular/material/dialog";
@@ -20,34 +18,26 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 
-
-
+import { AlertsComponent } from './component/alerts/alerts.component';
 import { AppsComponent } from './component/apps/apps.component';
+import { CollectionComponent } from './component/collection/collection.component';
 import { DashboardComponent } from './component/dashboard/dashboard.component';
+import { DepDetailComponent } from './component/dep-detail/dep-detail.component';
+import { DepartementComponent } from './component/departement/departement.component';
+import { HomeComponent } from './component/home/home.component';
+import { IndicatorLibraryComponent } from './component/indicator-library/indicator-library.component';
 import { IndicatorDetailsComponent } from './component/indicator-details/indicator-details.component';
 import { IndicatorComponent } from './component/indicators/indicators.component';
+import LoginComponent from './component/login/login.component';
+import { ProgrammeComponent } from './component/programme/programme.component';
+import { ScorecardComponent } from './component/scorecard/scorecard.component';
 import { SideBarComponent } from './component/side-bar/side-bar.component';
 import { TopBarComponent } from './component/top-bar/top-bar.component';
 import { UserComponent } from './component/user/user.component';
 
-
 import * as echarts from 'echarts';
 import { NgxEchartsModule } from 'ngx-echarts';
-import { DepartementComponent } from './component/departement/departement.component';
-import { HomeComponent } from './component/home/home.component';
-import LoginComponent from './component/login/login.component';
 import { AuthInterceptor, ErrorInterceptor } from './gaurd/auth.guard';
-import { DepDetailComponent } from './component/dep-detail/dep-detail.component';
-import { CollectionComponent } from './component/collection/collection.component';
-
-/* const routes: Routes = [
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'user', component: UserComponent },
-  { path: 'indicator', component: IndicatorComponent },
-  { path: 'indicator/:id', component: IndicatorDetailsComponent },
-  { path: 'apps', component: AppsComponent }
-]; */
-
 
 @NgModule({
   declarations: [
@@ -64,8 +54,10 @@ import { CollectionComponent } from './component/collection/collection.component
     DepartementComponent,
     DepDetailComponent,
     CollectionComponent,
-
-
+    ScorecardComponent,
+    ProgrammeComponent,
+    IndicatorLibraryComponent,
+    AlertsComponent,
   ],
   imports: [
     BrowserModule,
@@ -85,27 +77,15 @@ import { CollectionComponent } from './component/collection/collection.component
     MatSnackBarModule,
     MatButtonModule,
     MatStepperModule,
-    NgxEchartsModule.forRoot({
-      echarts
-    }),
-
-  //  RouterModule.forRoot(routes),
-
-  ],exports:[
+    NgxEchartsModule.forRoot({ echarts }),
+  ],
+  exports: [
     MatButtonModule,
-    MatStepperModule
-
+    MatStepperModule,
   ],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    },  {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptor,
-      multi: true
-    }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

@@ -1,577 +1,621 @@
 <ng-container *ngIf="indicator">
 
-
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Indicator:{{indicator.name}}</h1>
-
-
-
-        <div>
-            <button *ngIf="isResponsible()" type="button" class="btn btn-primary btn-sm btn-icon-split"
-                data-bs-toggle="modal" [attr.data-bs-target]="'#EvaluationModal'+indicator.id">
-                <span class="icon text-white-50">o
-                    <i class="fas fa-check"></i>
-                </span>
-                <span class="text">Evaluate</span>
-            </button>
-
-            <div *ngIf="isResponsible()" class="modal fade" id="EvaluationModal{{indicator.id}}" tabindex="-1"
-                aria-labelledby="EvaluationModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="EvaluationModalLabel">Evaluation</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="evaluationform" (ngSubmit)="evaluate()" method="post">
-                                <div class="row">
-                                    <div class="col-md-10">
-                                        <div class="form-group form-floating">
-
-
-                                            <input type="number" min="0" class="no-arrow form-control" placeholder=""
-                                                name="value" id="value" [(ngModel)]="value" required data-unit="units">
-                                            <label for="value">Indicator Value</label>
-                                            <!--   <input type="hidden" name="iid" value="${indicator.getId()}"> -->
-
-                                        </div>
-
-
-                                    </div>
-
-
-                                </div>
-
-
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
-                                form="evaluationform">Evaluate</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <button *ngIf="authservice.isAdmin()" type="button" class="btn btn-danger btn-sm btn-icon-split"
-                data-bs-toggle="modal" [attr.data-bs-target]="'#deleteModal'+indicator.id">
-                <span class="icon text-white-50">
-                    <i class="fas fa-trash"></i>
-                </span>
-                <span class="text">Delete</span>
-            </button>
-            <!-- Delete Modal -->
-            <div *ngIf="authservice.isAdmin()" class="modal fade" id="deleteModal{{indicator.id}}" tabindex="-1"
-                aria-labelledby="deleteModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered ">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Confirm deletion</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to delete this Indicator?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button (click)="deleteIndicator()" class="btn btn-danger"
-                                data-bs-dismiss="modal">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+  <!-- Page Header -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-0" style="color:var(--text-main)">{{ indicator.name }}</h1>
+      <div class="d-flex align-items-center gap-2 mt-1">
+        <span *ngIf="indicator.constructId" class="construct-badge">{{ indicator.constructId }}</span>
+        <span *ngIf="indicator.controlReference" class="control-ref-badge">{{ indicator.controlReference }}</span>
+        <span class="revision-badge revision-{{indicator.revisionStatus?.toLowerCase()}}">{{ indicator.revisionStatus || 'CURRENT' }}</span>
+      </div>
     </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <button *ngIf="isResponsible()" type="button" class="btn btn-success btn-sm btn-icon-split"
+          data-bs-toggle="modal" [attr.data-bs-target]="'#EvaluationModal'+indicator.id">
+        <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+        <span class="text">Record Measurement</span>
+      </button>
+      <button *ngIf="authservice.isAdmin()" type="button" class="btn btn-secondary btn-sm btn-icon-split"
+          data-bs-toggle="modal" data-bs-target="#indicatorForm">
+        <span class="icon text-white-50"><i class="fas fa-edit"></i></span>
+        <span class="text">Edit</span>
+      </button>
+      <button *ngIf="authservice.isAdmin()" type="button" class="btn btn-danger btn-sm btn-icon-split"
+          data-bs-toggle="modal" [attr.data-bs-target]="'#deleteModal'+indicator.id">
+        <span class="icon text-white-50"><i class="fas fa-trash"></i></span>
+        <span class="text">Delete</span>
+      </button>
+    </div>
+  </div>
 
+  <!-- Tabs -->
+  <div class="detail-tabs mb-4">
+    <button class="detail-tab-btn" [class.active]="activeTab==='overview'" (click)="activeTab='overview'">
+      <i class="fas fa-tachometer-alt me-1"></i> Overview
+    </button>
+    <button class="detail-tab-btn" [class.active]="activeTab==='history'" (click)="activeTab='history'">
+      <i class="fas fa-history me-1"></i> Measurement History
+    </button>
+    <button class="detail-tab-btn" [class.active]="activeTab==='construct'" (click)="activeTab='construct'">
+      <i class="fas fa-file-alt me-1"></i> Measurement Construct
+    </button>
+  </div>
+
+  <!-- ═══════════ TAB: OVERVIEW ═══════════ -->
+  <div *ngIf="activeTab==='overview'">
     <div class="row">
 
-        <div class="col-xl-7 col-lg-12">
-
-
-            <div class="card card-modern mb-4 ">
-
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 fw-bold" style="color: var(--primary-enterprise);">Indicator details</h6>
-
-                    <a *ngIf="authservice.isAdmin()" class="btn btn-secondary btn-sm btn-icon-split"
-                        data-bs-toggle="modal" data-bs-target="#indicatorForm">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-edit"></i>
-                        </span>
-                    </a>
-                </div>
-                <div class="card-body">
-                    <ul>
-                        <li>
-                            <strong>Name:</strong>
-                            {{indicator.name}}
-                        </li>
-
-                        <li>
-                            <strong>Category:</strong>
-                            {{indicator.category}}
-                        </li>
-                        <li>
-                            <strong>Type:</strong>
-                            {{indicator.type}}
-                        </li>
-                        <li>
-                            <strong>Frequency:</strong>
-                            {{indicator.frequency}}
-                        </li>
-                        <li>
-                            <strong>Benefit:</strong>
-                            {{indicator.benefit}}
-                        </li>
-                        <li>
-                            <strong>Description:</strong>
-                            {{indicator.description}}
-                        </li>
-                        <li>
-                            <strong>How to Measure:</strong>
-                            {{indicator.howtomeasure}}
-                        </li>
-
-                        <li>
-                            <strong>Information Owner:</strong>
-                            {{indicator.infoOwner}}
-                        </li>
-                        <li>
-                            <strong>Information Collector:</strong>
-                            {{indicator.infoCollector}}
-                        </li>
-                        <li>
-                            <strong>Information Customer:</strong>
-                            {{indicator.infoCustomer}}
-                        </li>
-
-                        <li>
-                            <strong>Target Value:</strong>
-                            {{indicator.targetValue}}
-                            ({{indicator.valueUnit}})
-                        </li>
-                        <li>
-                            <strong>Acceptable Value:</strong>
-                            {{indicator.acceptableValue}}
-                            ({{indicator.valueUnit}})
-                        </li>
-
-
-
-
-
-                        <li *ngIf="indicator.apps.length !== 0 ">
-                            <strong>Concerned Applications:</strong>
-                            <ul>
-                                <li *ngFor="let app of indicator.apps">
-                                    {{app.name}}
-                                </li>
-
-                            </ul>
-                        </li>
-
-
-                    </ul>
-                </div>
-
+      <!-- Left: Indicator Details -->
+      <div class="col-xl-7 col-lg-12">
+        <div class="card card-modern mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 fw-bold" style="color:var(--primary-enterprise)">Indicator Details</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="detail-field"><span class="detail-label">Name</span><span class="detail-value">{{ indicator.name }}</span></div>
+                <div class="detail-field"><span class="detail-label">Category</span><span class="detail-value">{{ indicator.category }}</span></div>
+                <div class="detail-field"><span class="detail-label">Type</span><span class="detail-value">{{ indicator.type }}</span></div>
+                <div class="detail-field"><span class="detail-label">Collection Frequency</span><span class="detail-value">{{ indicator.collectionFrequency || indicator.frequency }}</span></div>
+                <div class="detail-field"><span class="detail-label">Reporting Format</span><span class="detail-value">{{ indicator.reportingFormat || 'LINE_CHART' }}</span></div>
+              </div>
+              <div class="col-md-6">
+                <div class="detail-field"><span class="detail-label">Information Owner</span><span class="detail-value">{{ indicator.infoOwner }}</span></div>
+                <div class="detail-field"><span class="detail-label">Information Collector</span><span class="detail-value">{{ indicator.infoCollector }}</span></div>
+                <div class="detail-field"><span class="detail-label">Client for Measurement</span><span class="detail-value">{{ indicator.clientForMeasurement || indicator.infoCustomer }}</span></div>
+                <div class="detail-field"><span class="detail-label">Reviewer</span><span class="detail-value">{{ indicator.reviewerForMeasurement || '—' }}</span></div>
+                <div class="detail-field"><span class="detail-label">Revision Date</span><span class="detail-value">{{ indicator.measurementRevisionDate || '—' }}</span></div>
+              </div>
             </div>
-
+            <div class="detail-field mt-2"><span class="detail-label">Description</span><span class="detail-value">{{ indicator.description }}</span></div>
+            <div class="detail-field"><span class="detail-label">Measurement Method</span><span class="detail-value">{{ indicator.howtomeasure }}</span></div>
+            <div *ngIf="indicator.indicatorInterpretation" class="interpret-box mt-3">
+              <i class="fas fa-info-circle me-2 text-primary"></i>
+              <strong>Interpretation:</strong> {{ indicator.indicatorInterpretation }}
+            </div>
+          </div>
         </div>
+      </div>
 
-        <ng-container *ngIf="LatestEvaluation">
-
-            <div class="col-xl-5 col-lg-12">
-                <div class="card card-modern mb-4">
-
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 fw-bold" style="color: var(--primary-enterprise);">Evaluation overview</h6>
-
-                        <mat-checkbox *ngIf="authservice.isAdmin()" (ngModelChange)="checked(indicator)"
-                            [(ngModel)]="indicator.checked"></mat-checkbox>
-
-
-                    </div>
-                    <div class="card-body">
-
-
-
-                        <div class="d-flex justify-content-center mb-lg-2">
-
-                            <h3 id="indicatorValue"
-                                class="bold indicator-status {{LatestEvaluation!.status?.toLocaleLowerCase()}}">
-                                {{LatestEvaluation!.value}} </h3>
-
-                        </div>
-
-                        <h5><strong>Status: </strong>
-                            <span id="status" class="bold text-{{LatestEvaluation!.status?.toLocaleLowerCase()}}">
-                                {{LatestEvaluation!.status}}</span>
-                        </h5>
-                        <h5><strong>Performance: </strong>
-                            <ng-container *ngIf="LatestEvaluation!.performance! >= 0;else down ">
-                                <span class="text-good bold">
-                                    &#8593; {{LatestEvaluation!.performance}}
-                                </span>
-
-                            </ng-container>
-                            <ng-template #down>
-                                <span class="text-bad bold">
-
-                                    &#8595; {{LatestEvaluation!.performance}}
-                                </span>
-                            </ng-template>
-                        </h5>
-                        <ul>
-                            <li>
-                                <strong>Target Value:</strong> {{indicator.targetValue}} ({{indicator.valueUnit}})
-                            </li>
-
-                            <li>
-                                <strong>Acceptable Value:</strong> {{indicator.acceptableValue}}
-                                ({{indicator.valueUnit}})
-                            </li>
-                        </ul>
-                        <h6> <strong>Evaluation Date:</strong>
-                            {{LatestEvaluation!.evaluationDate.toString().substr(0,10)}}</h6>
-                        <h6><strong>Next Evaluation Date:</strong>
-                            {{LatestEvaluation.nextEvaluationDate!.toString().substr(0,10)}} </h6>
-                    </div>
-
-                </div>
-
+      <!-- Right: Latest Measurement Result -->
+      <div class="col-xl-5 col-lg-12">
+        <ng-container *ngIf="LatestEvaluation; else noEval">
+          <div class="card card-modern mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 fw-bold" style="color:var(--primary-enterprise)">Latest Measurement Result</h6>
             </div>
+            <div class="card-body text-center">
+              <div class="rag-value-display {{ getRagClass(LatestEvaluation.ragStatus || LatestEvaluation.status) }}">
+                {{ LatestEvaluation.value }} <small>{{ indicator.valueUnit }}</small>
+              </div>
+              <div class="d-flex justify-content-center align-items-center gap-3 mt-3 mb-3">
+                <span class="rag-pill {{ getRagClass(LatestEvaluation.ragStatus || LatestEvaluation.status) }}">
+                  {{ getRagLabel(LatestEvaluation.ragStatus || LatestEvaluation.status) }}
+                </span>
+                <span class="{{ getTrendClass() }} trend-indicator">
+                  {{ getTrendIcon() }} {{ trendDirection }}
+                </span>
+              </div>
+              <div *ngIf="LatestEvaluation.indicatorRatio !== undefined" class="ratio-display">
+                Ratio: <strong>{{ (LatestEvaluation.indicatorRatio * 100).toFixed(1) }}%</strong>
+              </div>
+              <hr>
+              <div class="decision-criteria-row">
+                <div class="dc-item dc-green"><i class="fas fa-circle"></i> GREEN ≥ {{ indicator.decisionCriteriaGreen ?? indicator.targetValue }} {{ indicator.valueUnit }}</div>
+                <div class="dc-item dc-amber"><i class="fas fa-circle"></i> AMBER ≥ {{ indicator.decisionCriteriaAmber ?? indicator.acceptableValue }} {{ indicator.valueUnit }}</div>
+                <div class="dc-item dc-red"><i class="fas fa-circle"></i> RED &lt; {{ indicator.decisionCriteriaAmber ?? indicator.acceptableValue }} {{ indicator.valueUnit }}</div>
+              </div>
+              <hr>
+              <div class="text-start small text-muted">
+                <div><strong>Measured:</strong> {{ LatestEvaluation.evaluationDate.toString().substr(0,10) }}</div>
+                <div *ngIf="LatestEvaluation.collectedBy"><strong>Collected by:</strong> {{ LatestEvaluation.collectedBy }}</div>
+                <div *ngIf="LatestEvaluation.verificationStatus">
+                  <strong>Status:</strong>
+                  <span class="verify-badge verify-{{LatestEvaluation.verificationStatus?.toLowerCase()}}">{{ LatestEvaluation.verificationStatus }}</span>
+                </div>
+                <div *ngIf="LatestEvaluation.collectionIssues" class="mt-1 text-warning">
+                  <i class="fas fa-exclamation-triangle me-1"></i>{{ LatestEvaluation.collectionIssues }}
+                </div>
+              </div>
+            </div>
+          </div>
         </ng-container>
-        <ng-container *ngIf="!LatestEvaluation">
-            <div ng class="col-xl-5 col-lg-12">
-                <div class="card card-modern mb-4">
-
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 fw-bold" style="color: var(--primary-enterprise);">Evaluation overview</h6>
-
-                    </div>
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-center">
-                            <h3>No Values at the moment</h3>
-                        </div>
-                    </div>
-
-                </div>
+        <ng-template #noEval>
+          <div class="card card-modern mb-4">
+            <div class="card-header py-3"><h6 class="m-0 fw-bold" style="color:var(--primary-enterprise)">Latest Measurement Result</h6></div>
+            <div class="card-body text-center py-5">
+              <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+              <p class="text-muted">No measurements recorded yet.</p>
             </div>
-        </ng-container>
-        <div class="col-xl-10 col-lg-12">
-            <div class="card card-modern mb-4">
+          </div>
+        </ng-template>
+      </div>
 
-                <!-- Card Header -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 fw-bold" style="color: var(--primary-enterprise);">Evaluation details</h6>
-
-                </div>
-                <div class="card-body">
-                    <div class="mb-5">
-
-                        <div echarts [options]="chartOptions" [loading]="loading"></div>
-                    </div>
-
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Evaluation Date</th>
-                                    <th>Evaluated by</th>
-                                    <th>Value</th>
-                                    <th>Performance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <tr *ngFor="let evaluate of listEvaluation">
-                                    <td>
-                                        {{evaluate.evaluationDate.toString().substr(0,10)}}
-                                    </td>
-                                    <td>{{evaluate?.resp?.username}}</td>
-                                    <td class="bold text-{{evaluate.status?.toLocaleLowerCase()}} ">{{evaluate.value}}
-                                    </td>
-                                    <td><ng-container *ngIf="evaluate?.performance! >= 0;else down ">
-                                            <span class="text-good bold">
-                                                &#8593; {{evaluate.performance}}
-                                            </span>
-
-                                        </ng-container>
-                                        <ng-template #down>
-                                            <span class="text-bad bold">
-
-                                                &#8595; {{evaluate.performance}}
-                                            </span>
-                                        </ng-template>
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-                        </table>
-
-
-                    </div>
-
-                </div>
-
-            </div>
+      <!-- Chart with threshold lines -->
+      <div class="col-12">
+        <div class="card card-modern mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 fw-bold" style="color:var(--primary-enterprise)">Trend Analysis — Measurement Results vs Decision Criteria</h6>
+          </div>
+          <div class="card-body">
+            <div echarts [options]="chartOptions" [loading]="loading" style="height:300px"></div>
+          </div>
         </div>
+      </div>
 
     </div>
+  </div>
+
+  <!-- ═══════════ TAB: MEASUREMENT HISTORY ═══════════ -->
+  <div *ngIf="activeTab==='history'">
+    <div class="card card-modern mb-4">
+      <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 fw-bold" style="color:var(--primary-enterprise)">Measurement History</h6>
+        <span class="text-muted small">{{ listEvaluation.length }} records</span>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Value</th>
+                <th>RAG Status</th>
+                <th>Ratio</th>
+                <th>Trend</th>
+                <th>Collected By</th>
+                <th>Verification</th>
+                <th>Issues</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ev of listEvaluation">
+                <td>{{ ev.evaluationDate.toString().substr(0,10) }}</td>
+                <td class="fw-bold">{{ ev.value }} <small class="text-muted">{{ indicator.valueUnit }}</small></td>
+                <td>
+                  <span class="rag-pill {{ getRagClass(ev.ragStatus || ev.status) }}">
+                    {{ getRagLabel(ev.ragStatus || ev.status) }}
+                  </span>
+                </td>
+                <td>{{ ev.indicatorRatio !== undefined ? (ev.indicatorRatio * 100).toFixed(1) + '%' : '—' }}</td>
+                <td>
+                  <span *ngIf="ev.trendDirection" class="small">{{ ev.trendDirection }}</span>
+                  <span *ngIf="!ev.trendDirection">—</span>
+                </td>
+                <td>{{ ev.collectedBy || ev.resp?.username || '—' }}</td>
+                <td>
+                  <span *ngIf="ev.verificationStatus" class="verify-badge verify-{{ev.verificationStatus.toLowerCase()}}">{{ ev.verificationStatus }}</span>
+                  <span *ngIf="!ev.verificationStatus">—</span>
+                </td>
+                <td class="text-warning small">{{ ev.collectionIssues || '—' }}</td>
+              </tr>
+              <tr *ngIf="listEvaluation.length === 0">
+                <td colspan="8" class="text-center text-muted py-4">No measurement records yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB: MEASUREMENT CONSTRUCT (Annex A) ═══════════ -->
+  <div *ngIf="activeTab==='construct'">
+    <div class="card card-modern mb-4">
+      <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 fw-bold" style="color:var(--primary-enterprise)">
+          <i class="fas fa-file-alt me-2"></i>Measurement Construct — ISO 27004:2009 Annex A Format
+        </h6>
+        <span *ngIf="indicator.constructId" class="construct-badge">{{ indicator.constructId }}</span>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <!-- Section 1: Identification -->
+          <div class="col-md-6">
+            <div class="construct-section">
+              <div class="construct-section-title">1. Identification</div>
+              <table class="construct-table">
+                <tr><td>Name</td><td>{{ indicator.name }}</td></tr>
+                <tr><td>Construct ID</td><td>{{ indicator.constructId || '—' }}</td></tr>
+                <tr><td>Control Reference</td><td>{{ indicator.controlReference || '—' }}</td></tr>
+                <tr><td>Control Objective</td><td>{{ indicator.controlObjective || '—' }}</td></tr>
+                <tr><td>Purpose of Measurement</td><td>{{ indicator.purposeOfMeasurement || '—' }}</td></tr>
+              </table>
+            </div>
+          </div>
+          <!-- Section 2: Object & Attributes -->
+          <div class="col-md-6">
+            <div class="construct-section">
+              <div class="construct-section-title">2. Object &amp; Attributes</div>
+              <table class="construct-table">
+                <tr><td>Object of Measurement</td><td>{{ indicator.objectOfMeasurement || '—' }}</td></tr>
+                <tr><td>Attribute</td><td>{{ indicator.attribute || '—' }}</td></tr>
+                <tr><td>Category</td><td>{{ indicator.category }}</td></tr>
+              </table>
+            </div>
+          </div>
+          <!-- Section 3: Base Measure -->
+          <div class="col-md-6">
+            <div class="construct-section">
+              <div class="construct-section-title">3. Base Measure (§5.4.2)</div>
+              <table class="construct-table">
+                <tr><td>Description</td><td>{{ indicator.baseMeasureDescription || '—' }}</td></tr>
+                <tr><td>Method Type</td><td>{{ indicator.measurementMethodType || '—' }}</td></tr>
+                <tr><td>Scale Type</td><td>{{ indicator.scaleType || '—' }}</td></tr>
+                <tr><td>Unit</td><td>{{ indicator.valueUnit }}</td></tr>
+              </table>
+            </div>
+          </div>
+          <!-- Section 4: Derived Measure -->
+          <div class="col-md-6">
+            <div class="construct-section">
+              <div class="construct-section-title">4. Derived Measure (§5.4.3)</div>
+              <table class="construct-table">
+                <tr><td>Description</td><td>{{ indicator.derivedMeasureDescription || '—' }}</td></tr>
+                <tr><td>Measurement Function</td><td><code>{{ indicator.measurementFunction || '—' }}</code></td></tr>
+              </table>
+            </div>
+          </div>
+          <!-- Section 5: Indicator & Analytical Model -->
+          <div class="col-md-6">
+            <div class="construct-section">
+              <div class="construct-section-title">5. Indicator &amp; Analytical Model (§5.4.4)</div>
+              <table class="construct-table">
+                <tr><td>Analytical Model</td><td>{{ indicator.analyticalModel || '—' }}</td></tr>
+                <tr><td>Reporting Format</td><td>{{ indicator.reportingFormat || '—' }}</td></tr>
+                <tr><td>Interpretation</td><td>{{ indicator.indicatorInterpretation || '—' }}</td></tr>
+              </table>
+            </div>
+          </div>
+          <!-- Section 6: Decision Criteria -->
+          <div class="col-md-6">
+            <div class="construct-section">
+              <div class="construct-section-title">6. Decision Criteria (§5.4.5)</div>
+              <table class="construct-table">
+                <tr><td><span class="dc-dot dc-dot-green"></span> GREEN</td><td>{{ indicator.performance === 'asc' ? '≥' : '≤' }} {{ indicator.decisionCriteriaGreen ?? indicator.targetValue }} {{ indicator.valueUnit }}</td></tr>
+                <tr><td><span class="dc-dot dc-dot-amber"></span> AMBER</td><td>{{ indicator.performance === 'asc' ? '≥' : '≤' }} {{ indicator.decisionCriteriaAmber ?? indicator.acceptableValue }} {{ indicator.valueUnit }}</td></tr>
+                <tr><td><span class="dc-dot dc-dot-red"></span> RED</td><td>{{ indicator.performance === 'asc' ? '<' : '>' }} {{ indicator.decisionCriteriaAmber ?? indicator.acceptableValue }} {{ indicator.valueUnit }}</td></tr>
+                <tr *ngIf="indicator.decisionCriteriaDescription"><td colspan="2" class="text-muted small">{{ indicator.decisionCriteriaDescription }}</td></tr>
+              </table>
+            </div>
+          </div>
+          <!-- Section 7: Stakeholders -->
+          <div class="col-md-6">
+            <div class="construct-section">
+              <div class="construct-section-title">7. Stakeholders (§7.5.8)</div>
+              <table class="construct-table">
+                <tr><td>Information Owner</td><td>{{ indicator.infoOwner }}</td></tr>
+                <tr><td>Information Collector</td><td>{{ indicator.infoCollector }}</td></tr>
+                <tr><td>Client for Measurement</td><td>{{ indicator.clientForMeasurement || indicator.infoCustomer }}</td></tr>
+                <tr><td>Reviewer</td><td>{{ indicator.reviewerForMeasurement || '—' }}</td></tr>
+                <tr><td>Communicator</td><td>{{ indicator.informationCommunicator || '—' }}</td></tr>
+              </table>
+            </div>
+          </div>
+          <!-- Section 8: Frequency & Period -->
+          <div class="col-md-6">
+            <div class="construct-section">
+              <div class="construct-section-title">8. Frequency &amp; Period (§7.7)</div>
+              <table class="construct-table">
+                <tr><td>Collection Frequency</td><td>{{ indicator.collectionFrequency || indicator.frequency }}</td></tr>
+                <tr><td>Analysis Frequency</td><td>{{ indicator.analysisFrequency || indicator.collectionFrequency || indicator.frequency }}</td></tr>
+                <tr><td>Reporting Frequency</td><td>{{ indicator.reportingFrequency || indicator.frequency }}</td></tr>
+                <tr><td>Period of Measurement</td><td>{{ indicator.periodOfMeasurement || '—' }}</td></tr>
+                <tr><td>Revision Date</td><td>{{ indicator.measurementRevisionDate || '—' }}</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </ng-container>
 
 
-<div *ngIf="authservice.isAdmin()" class="modal fade" id="indicatorForm" tabindex="-1" aria-labelledby="ModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-fullscreen">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="ModalLabel">Edit a CyberSecurity Indicator</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addIndicator" (ngSubmit)="edit()" #myForm="ngForm">
-
-                    <mat-horizontal-stepper>
-
-
-
-
-                        <mat-step label="Indicator Details">
-                            <div class="row">
-                                <div class="col-md-6">
-
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="name"
-                                            [(ngModel)]="name" id="name" required>
-                                        <label for="name">Indicator's name</label>
-
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group form-floating">
-
-                                                <input type="text" class="form-control" placeholder="" name="type"
-                                                    [(ngModel)]="type" id="type" required>
-                                                <label for="type">Type</label>
-
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group form-floating">
-
-                                                <input list="catid" type="text" class="form-control" placeholder=""
-                                                    name="category" [(ngModel)]="category" id="category" required>
-                                                <label for="category">Category</label>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="benefit"
-                                            [(ngModel)]="benefit" id="benefits" required>
-                                        <label for="benefits">Benefits</label>
-
-                                    </div>
-
-
-                                    <div class="form-group form-floating">
-
-                                        <textarea maxlength="1000" class="form-control" placeholder=""
-                                            name="description" [(ngModel)]="description" id="description" required
-                                            rows="5" cols="10"></textarea>
-                                        <label for="description">Description</label>
-
-                                    </div>
-
-                                    <div class="form-group form-floating">
-
-                                        <textarea maxlength="1000" class="form-control" placeholder=""
-                                            name="howtomeasure" [(ngModel)]="howtomeasure" id="measure" required
-                                            rows="5" cols="10"></textarea>
-                                        <label for="measure">How to measure</label>
-
-                                    </div>
-
-
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group form-floating">
-
-                                        <select id="frenquency" class="form-select" name="frequency"
-                                            [(ngModel)]="frequency">
-                                            <option value="monthly">Monthly</option>
-                                            <option value="quarterly">Quarterly</option>
-                                            <option value="annually">Annually</option>
-                                        </select>
-                                        <label for="frenquency">Frequency</label>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-
-                                            <div class="form-group form-floating">
-
-                                                <input min="0" type="number" class="form-control" placeholder=""
-                                                    name="target" [(ngModel)]="targetValue" id="target" required>
-                                                <label for="target">Target value</label>
-
-                                            </div>
-                                            <div class="form-group form-floating">
-
-                                                <input min="0" type="number" class="form-control" placeholder=""
-                                                    name="accept" [(ngModel)]="acceptableValue" id="accept" required>
-                                                <label for="accept">Acceptable value</label>
-
-                                            </div>
-
-                                        </div>
-                                        <div class="col-md-6">
-
-
-
-                                            <div class="form-group form-floating">
-                                                <select id="perf" class="form-select" name="peformence"
-                                                    [(ngModel)]="performance">
-                                                    <option value="asc">&#8593; Increment</option>
-                                                    <option value="desc">&#8595; Decrement</option>
-
-                                                </select>
-                                                <label for="perf">Performance Indicator</label>
-                                            </div>
-
-
-
-                                            <div class="form-group form-floating">
-                                                <select id="unit" class="form-select" name="valueUnit"
-                                                    [(ngModel)]="valueUnit">
-                                                    <option value="%">percentage </option>
-                                                    <option value="nomber">Number</option>
-                                                </select>
-                                                <label for="unit">Indicator Unit</label>
-                                            </div>
-
-
-
-                                        </div>
-                                    </div>
-
-
-
-
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="infoOwner"
-                                            [(ngModel)]="infoOwner" id="infoOwnwer" required>
-                                        <label for="infoOwnwer">Information Owner</label>
-
-                                    </div>
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="infoCollector"
-                                            [(ngModel)]="infoCollector" id="infoCollector" required>
-                                        <label for="infoCollector">Information Collector</label>
-
-                                    </div>
-                                    <div class="form-group form-floating">
-
-                                        <input type="text" class="form-control" placeholder="" name="infoCustomer"
-                                            [(ngModel)]="infoCustomer" id="infoCustomer" required>
-                                        <label for="infoCustomer">Information Customer</label>
-
-                                    </div>
-
-                                    <!--  <div class="applist">
-
-                                        <div *ngFor="let app of listapp ">
-                                            <input type="checkbox" [id]="app.id" [value]="app.id" [name]="app.name"
-                                                [checked]="isChecked(app.id)" (click)="onChange($event,app.name)" />
-                                            <label [for]="app.id"> {{ app.name }}</label>
-
-
-                                        </div>
-                                    </div> -->
-                                    <button style="float: right;" type="button" mat-button matStepperNext>Next</button>
-                                </div>
-                            </div>
-                        </mat-step>
-                        <mat-step label="Related Entities">
-
-                            <div class="row stp2">
-
-                                <div class="col-md-4">
-                                    <h5>Applications concerned with this Indicator</h5>
-                                    <div class="card-body">
-                                        <div class="">
-                                            <div class="form-check" *ngFor="let app of listapp ">
-                                                <input class="form-check-input"  type="checkbox" [id]="app.id" [value]="app.id" [name]="app.name"
-                                                    [checked]="isChecked(app.id)" (click)="onChange($event,app.name)" />
-                                                <label class="form-check-label" [for]="app.id"> {{ app.name }}</label>
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="deplist">
-                                        <h5>Departments concerned with this Indicator</h5>
-                                        <div class="card-body">
-                                            <div class="">
-                                                <div class="form-check" *ngFor="let d of allDeps ">
-                                                    <input class="form-check-input"  type="checkbox" [id]="d.id" [value]="d.id" [name]="d.name"
-                                                        [checked]="isDChecked(d.id)" (click)="onDChange($event,d)" />
-                                                    <label class="form-check-label" [for]="d.id"> {{ d.name }}</label>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5>Collector responsable for this Indicator</h5>
-
-
-
-                                        <div *ngFor="let r of allCollector">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" (click)="setEvaluator(r)" id="{{r.id}}" [checked]="isCChecked(r.id)" name="optradio" value="{{r.id}}" required>
-                                                <label class="form-check-label" for="{{r.id}}">  {{r.collector.username}}</label>
-                                              </div>
-
-                                           <!--  <input name="apps"  type="radio" (click)="setEvaluator(r)" value="{{r.id}}"  required>
-                                            <span>
-                                                {{r.username}}
-                                            </span> -->
-
-
-                                        </div>
-
-                                </div>
-                            </div>
-                        </mat-step>
-                    </mat-horizontal-stepper>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" form="addIndicator" class="btn btn-primary" data-bs-dismiss="modal">
-                    Update</button>
-            </div>
-        </div>
+<!-- ═══ Evaluate Modal ═══ -->
+<div *ngIf="indicator && isResponsible()" class="modal fade" id="EvaluationModal{{indicator.id}}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Record Measurement — {{ indicator?.name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="evaluationform" (ngSubmit)="evaluate()">
+          <div class="form-group form-floating mb-3">
+            <input type="number" min="0" class="no-arrow form-control" placeholder="" name="value" id="value"
+              [(ngModel)]="value" required>
+            <label for="value">Measurement Value ({{ indicator?.valueUnit }})</label>
+          </div>
+          <div class="form-group form-floating mb-3">
+            <textarea class="form-control" placeholder="" name="issues" id="issues"
+              [(ngModel)]="collectionIssues" rows="3" style="height:80px"></textarea>
+            <label for="issues">Collection Issues / Notes (optional)</label>
+          </div>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="confirmData" [(ngModel)]="confirmDataSource" name="confirmData">
+            <label class="form-check-label" for="confirmData">I confirm the data was extracted from the defined source</label>
+          </div>
+          <!-- RAG preview -->
+          <div *ngIf="value > 0" class="rag-preview-box">
+            Predicted RAG:
+            <span class="rag-pill" [ngClass]="getRagClass(indicator ? (indicator.performance === 'asc' ? (value >= (indicator.decisionCriteriaGreen ?? indicator.targetValue) ? 'GREEN' : value >= (indicator.decisionCriteriaAmber ?? indicator.acceptableValue) ? 'AMBER' : 'RED') : (value <= (indicator.decisionCriteriaGreen ?? indicator.targetValue) ? 'GREEN' : value <= (indicator.decisionCriteriaAmber ?? indicator.acceptableValue) ? 'AMBER' : 'RED')) : 'RED')">
+              {{ indicator ? (indicator.performance === 'asc' ? (value >= (indicator.decisionCriteriaGreen ?? indicator.targetValue) ? 'GREEN' : value >= (indicator.decisionCriteriaAmber ?? indicator.acceptableValue) ? 'AMBER' : 'RED') : (value <= (indicator.decisionCriteriaGreen ?? indicator.targetValue) ? 'GREEN' : value <= (indicator.decisionCriteriaAmber ?? indicator.acceptableValue) ? 'AMBER' : 'RED')) : 'RED' }}
+            </span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-success" data-bs-dismiss="modal" form="evaluationform">
+          <i class="fas fa-check me-1"></i>Submit Measurement
+        </button>
+      </div>
     </div>
+  </div>
 </div>
+
+<!-- ═══ Delete Modal ═══ -->
+<div *ngIf="indicator && authservice.isAdmin()" class="modal fade" id="deleteModal{{indicator.id}}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">Are you sure you want to delete <strong>{{ indicator?.name }}</strong>?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button (click)="deleteIndicator()" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Edit Modal ═══ -->
+<div *ngIf="authservice.isAdmin()" class="modal fade" id="indicatorForm" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Indicator — {{ indicator?.name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body overflow-auto">
+        <form id="editIndicatorForm" (ngSubmit)="edit()">
+          <mat-horizontal-stepper>
+
+            <mat-step label="Basic Info">
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="name" [(ngModel)]="name" id="ename" required>
+                    <label for="ename">Indicator Name</label>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <input type="text" class="form-control" placeholder="" name="type" [(ngModel)]="type" id="etype">
+                        <label for="etype">Type</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <input list="catid" type="text" class="form-control" placeholder="" name="category" [(ngModel)]="category" id="ecat">
+                        <label for="ecat">Category</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <textarea class="form-control" placeholder="" name="description" [(ngModel)]="description" id="edesc" rows="3" style="height:80px"></textarea>
+                    <label for="edesc">Description</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <textarea class="form-control" placeholder="" name="howtomeasure" [(ngModel)]="howtomeasure" id="emeasure" rows="3" style="height:80px"></textarea>
+                    <label for="emeasure">Measurement Method</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="benefit" [(ngModel)]="benefit" id="ebenefit">
+                    <label for="ebenefit">Benefit</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <input type="number" class="form-control" placeholder="" name="target" [(ngModel)]="targetValue" id="etarget">
+                        <label for="etarget">Target Value (GREEN)</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <input type="number" class="form-control" placeholder="" name="accept" [(ngModel)]="acceptableValue" id="eaccept">
+                        <label for="eaccept">Acceptable Value (AMBER)</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <select class="form-select" name="perf" [(ngModel)]="performance" id="eperf">
+                          <option value="asc">↑ Higher is better</option>
+                          <option value="desc">↓ Lower is better</option>
+                        </select>
+                        <label for="eperf">Performance Direction</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <select class="form-select" name="valueUnit" [(ngModel)]="valueUnit" id="eunit">
+                          <option value="%">%</option>
+                          <option value="number">Number</option>
+                          <option value="score">Score</option>
+                          <option value="days">Days</option>
+                          <option value="incidents">Incidents</option>
+                        </select>
+                        <label for="eunit">Unit</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="infoOwner" [(ngModel)]="infoOwner" id="eowner">
+                    <label for="eowner">Information Owner</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="infoCollector" [(ngModel)]="infoCollector" id="ecollector">
+                    <label for="ecollector">Information Collector</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="infoCustomer" [(ngModel)]="infoCustomer" id="ecustomer">
+                    <label for="ecustomer">Client for Measurement</label>
+                  </div>
+                  <button type="button" mat-button matStepperNext class="float-end">Next →</button>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step label="ISO 27004 Construct">
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="constructId" [(ngModel)]="constructId" id="econstructId">
+                    <label for="econstructId">Construct ID (e.g. B.4.1)</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="controlReference" [(ngModel)]="controlReference" id="econtrolRef">
+                    <label for="econtrolRef">Control Reference (e.g. A.8.2.2)</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <textarea class="form-control" placeholder="" name="controlObjective" [(ngModel)]="controlObjective" id="econtrolObj" style="height:80px"></textarea>
+                    <label for="econtrolObj">Control Objective</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="objectOfMeasurement" [(ngModel)]="objectOfMeasurement" id="eobject">
+                    <label for="eobject">Object of Measurement</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <select class="form-select" name="measurementMethodType" [(ngModel)]="measurementMethodType" id="emmt">
+                      <option value="OBJECTIVE">OBJECTIVE</option>
+                      <option value="SUBJECTIVE">SUBJECTIVE</option>
+                    </select>
+                    <label for="emmt">Measurement Method Type</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <select class="form-select" name="scaleType" [(ngModel)]="scaleType" id="escale">
+                      <option value="NOMINAL">NOMINAL</option>
+                      <option value="ORDINAL">ORDINAL</option>
+                      <option value="INTERVAL">INTERVAL</option>
+                      <option value="RATIO">RATIO</option>
+                    </select>
+                    <label for="escale">Scale Type</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group form-floating mb-3">
+                    <textarea class="form-control" placeholder="" name="analyticalModel" [(ngModel)]="analyticalModel" id="eanalytical" style="height:80px"></textarea>
+                    <label for="eanalytical">Analytical Model</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="text" class="form-control" placeholder="" name="measurementFunction" [(ngModel)]="measurementFunction" id="emf">
+                    <label for="emf">Measurement Function / Formula</label>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <textarea class="form-control" placeholder="" name="indicatorInterpretation" [(ngModel)]="indicatorInterpretation" id="einterp" style="height:80px"></textarea>
+                    <label for="einterp">Indicator Interpretation</label>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <select class="form-select" name="collectionFrequency" [(ngModel)]="collectionFrequency" id="ecfreq">
+                          <option value="DAILY">Daily</option>
+                          <option value="WEEKLY">Weekly</option>
+                          <option value="MONTHLY">Monthly</option>
+                          <option value="QUARTERLY">Quarterly</option>
+                          <option value="YEARLY">Yearly</option>
+                        </select>
+                        <label for="ecfreq">Collection Frequency</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group form-floating mb-3">
+                        <select class="form-select" name="reportingFrequency" [(ngModel)]="reportingFrequency" id="erfreq">
+                          <option value="DAILY">Daily</option>
+                          <option value="WEEKLY">Weekly</option>
+                          <option value="MONTHLY">Monthly</option>
+                          <option value="QUARTERLY">Quarterly</option>
+                          <option value="YEARLY">Yearly</option>
+                        </select>
+                        <label for="erfreq">Reporting Frequency</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-floating mb-3">
+                    <input type="date" class="form-control" name="measurementRevisionDate" [(ngModel)]="measurementRevisionDate" id="erevdate">
+                    <label for="erevdate">Measurement Revision Date</label>
+                  </div>
+                  <div class="d-flex justify-content-between mt-2">
+                    <button type="button" mat-button matStepperPrevious>← Back</button>
+                    <button type="button" mat-button matStepperNext>Next →</button>
+                  </div>
+                </div>
+              </div>
+            </mat-step>
+
+            <mat-step label="Related Entities">
+              <div class="row mt-3">
+                <div class="col-md-4">
+                  <h6>Applications</h6>
+                  <div class="form-check" *ngFor="let app of listapp">
+                    <input class="form-check-input" type="checkbox" [id]="'eapp'+app.id" [value]="app.id" [name]="app.name" [checked]="isChecked(app.id)" (change)="onChange($event, app.name)">
+                    <label class="form-check-label" [for]="'eapp'+app.id">{{ app.name }}</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <h6>Departments</h6>
+                  <div class="form-check" *ngFor="let d of allDeps">
+                    <input class="form-check-input" type="checkbox" [id]="'edep'+d.id" [value]="d.id" [name]="d.name" [checked]="isDChecked(d.id)" (change)="onDChange($event, d)">
+                    <label class="form-check-label" [for]="'edep'+d.id">{{ d.name }}</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <h6>Collectors</h6>
+                  <div class="form-check" *ngFor="let r of allCollector">
+                    <input class="form-check-input" type="checkbox" [id]="'ecol'+r.id" [checked]="isCChecked(r.id)" (click)="setEvaluator(r)">
+                    <label class="form-check-label" [for]="'ecol'+r.id">{{ r.collector.username }}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <button type="button" mat-button matStepperPrevious>← Back</button>
+              </div>
+            </mat-step>
+
+          </mat-horizontal-stepper>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" form="editIndicatorForm" class="btn btn-primary" data-bs-dismiss="modal">
+          <i class="fas fa-save me-1"></i>Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<datalist id="catid">
+  <option value="Human resources security"></option>
+  <option value="Access control"></option>
+  <option value="Incident management"></option>
+  <option value="Physical and environmental security"></option>
+  <option value="System and application security"></option>
+  <option value="Monitoring and logging"></option>
+  <option value="Information security policy"></option>
+  <option value="Corrective and preventive actions"></option>
+  <option value="Supplier relationships"></option>
+  <option value="ISMS Governance"></option>
+  <option value="Cryptography"></option>
+  <option value="Business continuity management"></option>
+</datalist>

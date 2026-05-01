@@ -1,0 +1,208 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h1 class="h3 mb-0" style="color:var(--text-main)">Measurement Programme</h1>
+    <p class="text-muted small mb-0">ISO 27004:2009 §5.2 / §10 — Programme Management</p>
+  </div>
+  <button *ngIf="authService.isAdmin()" class="btn btn-sm btn-enterprise-primary" data-bs-toggle="modal" data-bs-target="#addProgModal" (click)="openAdd()">
+    <i class="fas fa-plus me-1"></i>New Programme
+  </button>
+</div>
+
+<!-- Programme Cards -->
+<div class="row g-3">
+  <div class="col-12" *ngFor="let p of programmes">
+    <div class="card card-modern prog-card">
+      <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <div>
+          <h6 class="mb-0 fw-bold" style="color:var(--primary-enterprise)">{{ p.name }}</h6>
+          <small class="text-muted">Owner: {{ p.ownerName }} · {{ p.indicatorIds.length }} indicator(s) · Review: {{ p.reviewFrequency }}</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="prog-status-badge {{ getStatusClass(p.status) }}">{{ p.status }}</span>
+          <button *ngIf="authService.isAdmin()" class="btn btn-sm btn-outline-secondary" (click)="openEdit(p)" data-bs-toggle="modal" data-bs-target="#editProgModal">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button *ngIf="authService.isAdmin()" class="btn btn-sm btn-outline-danger" (click)="deleteProgramme(p)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="prog-detail-field"><span class="prog-detail-label">Scope</span><span>{{ p.scope }}</span></div>
+          </div>
+          <div class="col-md-3">
+            <div class="prog-detail-field"><span class="prog-detail-label">Objectives</span><span>{{ p.objectives }}</span></div>
+          </div>
+          <div class="col-md-3">
+            <div class="prog-detail-field"><span class="prog-detail-label">Evaluation Criteria (§10.2)</span><span>{{ p.evaluationCriteria }}</span></div>
+          </div>
+          <div class="col-md-3">
+            <div class="prog-detail-field"><span class="prog-detail-label">Policy</span><span>{{ p.policy }}</span></div>
+          </div>
+        </div>
+        <div class="prog-indicators-row mt-3">
+          <strong class="text-muted small">INDICATORS:</strong>
+          <span class="prog-ind-tag" *ngFor="let id of p.indicatorIds">
+            <a [routerLink]="['/indicator', id]" class="prog-ind-link">#{{ id }}</a>
+          </span>
+          <span *ngIf="p.indicatorIds.length === 0" class="text-muted small">No indicators assigned</span>
+        </div>
+        <div class="row mt-3">
+          <div class="col-auto"><small class="text-muted">Last Review: <strong>{{ p.lastReviewDate || '—' }}</strong></small></div>
+          <div class="col-auto"><small class="text-muted">Next Review: <strong>{{ p.nextReviewDate || '—' }}</strong></small></div>
+          <div class="col-auto"><small class="text-muted">Created: <strong>{{ p.createdAt || '—' }}</strong></small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="programmes.length === 0" class="col-12">
+    <div class="card card-modern">
+      <div class="card-body text-center py-5">
+        <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No measurement programmes defined yet.</p>
+        <button *ngIf="authService.isAdmin()" class="btn btn-enterprise-primary" data-bs-toggle="modal" data-bs-target="#addProgModal" (click)="openAdd()">Create First Programme</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Programme Modal -->
+<div class="modal fade" id="addProgModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Measurement Programme</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addProgForm" (ngSubmit)="addProgramme()">
+          <div class="form-group form-floating mb-3">
+            <input type="text" class="form-control" placeholder="" name="pname" [(ngModel)]="newName" id="pname" required>
+            <label for="pname">Programme Name</label>
+          </div>
+          <div class="form-group form-floating mb-3">
+            <textarea class="form-control" placeholder="" name="pscope" [(ngModel)]="newScope" id="pscope" style="height:70px"></textarea>
+            <label for="pscope">Scope</label>
+          </div>
+          <div class="form-group form-floating mb-3">
+            <textarea class="form-control" placeholder="" name="pobj" [(ngModel)]="newObjectives" id="pobj" style="height:70px"></textarea>
+            <label for="pobj">Objectives</label>
+          </div>
+          <div class="form-group form-floating mb-3">
+            <textarea class="form-control" placeholder="" name="ppol" [(ngModel)]="newPolicy" id="ppol" style="height:70px"></textarea>
+            <label for="ppol">Policy</label>
+          </div>
+          <div class="form-group form-floating mb-3">
+            <textarea class="form-control" placeholder="" name="peval" [(ngModel)]="newEvalCriteria" id="peval" style="height:70px"></textarea>
+            <label for="peval">Evaluation Criteria (§10.2)</label>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group form-floating mb-3">
+                <select class="form-select" name="pfreq" [(ngModel)]="newReviewFreq" id="pfreq">
+                  <option value="Monthly">Monthly</option>
+                  <option value="Quarterly">Quarterly</option>
+                  <option value="Annually">Annually</option>
+                </select>
+                <label for="pfreq">Review Frequency</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-floating mb-3">
+                <select class="form-select" name="pstatus" [(ngModel)]="newStatus" id="pstatus">
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="UNDER_REVIEW">UNDER REVIEW</option>
+                  <option value="INACTIVE">INACTIVE</option>
+                </select>
+                <label for="pstatus">Status</label>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold small text-muted">ASSIGN INDICATORS</label>
+            <div class="ind-select-grid mt-2">
+              <div class="form-check" *ngFor="let ind of allIndicators">
+                <input class="form-check-input" type="checkbox" [id]="'pind'+ind.id"
+                  [checked]="isSelected(ind.id!, newIndicatorIds)"
+                  (change)="toggleIndicator(ind.id!, newIndicatorIds)">
+                <label class="form-check-label small" [for]="'pind'+ind.id">{{ ind.name }}</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" form="addProgForm" class="btn btn-primary" data-bs-dismiss="modal">Create Programme</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Programme Modal -->
+<div class="modal fade" id="editProgModal" tabindex="-1" aria-hidden="true" *ngIf="editingProgramme">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Programme</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editProgForm" (ngSubmit)="saveProgramme()">
+          <div class="form-group form-floating mb-3">
+            <input type="text" class="form-control" placeholder="" name="epname" [(ngModel)]="editingProgramme.name" id="epname">
+            <label for="epname">Programme Name</label>
+          </div>
+          <div class="form-group form-floating mb-3">
+            <textarea class="form-control" placeholder="" name="epscope" [(ngModel)]="editingProgramme.scope" id="epscope" style="height:70px"></textarea>
+            <label for="epscope">Scope</label>
+          </div>
+          <div class="form-group form-floating mb-3">
+            <textarea class="form-control" placeholder="" name="epobj" [(ngModel)]="editingProgramme.objectives" id="epobj" style="height:70px"></textarea>
+            <label for="epobj">Objectives</label>
+          </div>
+          <div class="form-group form-floating mb-3">
+            <textarea class="form-control" placeholder="" name="epeval" [(ngModel)]="editingProgramme.evaluationCriteria" id="epeval" style="height:70px"></textarea>
+            <label for="epeval">Evaluation Criteria</label>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group form-floating mb-3">
+                <select class="form-select" name="epstatus" [(ngModel)]="editingProgramme.status" id="epstatus">
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="UNDER_REVIEW">UNDER REVIEW</option>
+                  <option value="INACTIVE">INACTIVE</option>
+                </select>
+                <label for="epstatus">Status</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-floating mb-3">
+                <input type="date" class="form-control" name="epnext" [(ngModel)]="editingProgramme.nextReviewDate" id="epnext">
+                <label for="epnext">Next Review Date</label>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold small text-muted">INDICATORS</label>
+            <div class="ind-select-grid mt-2">
+              <div class="form-check" *ngFor="let ind of allIndicators">
+                <input class="form-check-input" type="checkbox" [id]="'epind'+ind.id"
+                  [checked]="isSelected(ind.id!, editingProgramme.indicatorIds)"
+                  (change)="toggleIndicator(ind.id!, editingProgramme.indicatorIds)">
+                <label class="form-check-label small" [for]="'epind'+ind.id">{{ ind.name }}</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" form="editProgForm" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

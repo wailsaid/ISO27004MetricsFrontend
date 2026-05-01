@@ -205,9 +205,38 @@ setR(){
 
 
   edit(indicator: Indicator) {
-
     this.sub3 = this.indicatorService.editIndicator(indicator).subscribe();
+  }
 
+  getRagClass(e: any): string {
+    const r = e.ragStatus || e.status;
+    if (r === 'GREEN' || r === 'good') return 'rag-green';
+    if (r === 'AMBER' || r === 'tolerable') return 'rag-amber';
+    return 'rag-red';
+  }
+
+  getRagLabel(e: any): string {
+    const r = e.ragStatus || e.status;
+    if (r === 'GREEN' || r === 'good') return 'GREEN';
+    if (r === 'AMBER' || r === 'tolerable') return 'AMBER';
+    return 'RED';
+  }
+
+  getTrendIcon(e: any): string {
+    if (e.trendDirection === 'UPWARD') return '↑';
+    if (e.trendDirection === 'DOWNWARD') return '↓';
+    if ((e.performance ?? 0) > 0) return '↑';
+    if ((e.performance ?? 0) < 0) return '↓';
+    return '→';
+  }
+
+  getTrendClass(e: any): string {
+    const ind = e.indicator;
+    const dir = e.trendDirection || ((e.performance ?? 0) > 0 ? 'UPWARD' : (e.performance ?? 0) < 0 ? 'DOWNWARD' : 'STABLE');
+    if (ind?.performance === 'asc') {
+      return dir === 'UPWARD' ? 'text-success' : dir === 'DOWNWARD' ? 'text-danger' : 'text-muted';
+    }
+    return dir === 'DOWNWARD' ? 'text-success' : dir === 'UPWARD' ? 'text-danger' : 'text-muted';
   }
 
 }

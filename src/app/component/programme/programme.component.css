@@ -1,0 +1,11 @@
+.prog-card { border-left: 4px solid var(--primary-enterprise, #1e3a5f); }
+.prog-status-badge { font-size: .75rem; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+.status-active   { background: #d1fae5; color: #065f46; }
+.status-warn     { background: #fef3c7; color: #92400e; }
+.status-inactive { background: #f3f4f6; color: #6b7280; }
+.prog-detail-field { display: flex; flex-direction: column; margin-bottom: 8px; }
+.prog-detail-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #9ca3af; }
+.prog-indicators-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.prog-ind-tag { background: #eff6ff; border-radius: 6px; padding: 2px 8px; }
+.prog-ind-link { color: #2563eb; font-size: .8rem; text-decoration: none; font-weight: 600; }
+.ind-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px; }

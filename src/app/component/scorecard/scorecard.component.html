@@ -1,0 +1,107 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h1 class="h3 mb-0" style="color:var(--text-main)">Executive Scorecard</h1>
+    <p class="text-muted small mb-0">ISO 27001/27004 ISMS Compliance — {{ lastUpdate }}</p>
+  </div>
+  <div class="d-flex gap-2">
+    <span class="prog-badge prog-{{programme?.status?.toLowerCase()}}">{{ programme?.status }}</span>
+  </div>
+</div>
+
+<!-- KPI Row -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="sc-kpi-card {{ getScoreClass() }}">
+      <div class="sc-kpi-value">{{ overallScore }}%</div>
+      <div class="sc-kpi-label">Overall ISMS Compliance</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="sc-kpi-card score-green">
+      <div class="sc-kpi-value">{{ greenCount }}</div>
+      <div class="sc-kpi-label">GREEN Indicators</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="sc-kpi-card score-amber">
+      <div class="sc-kpi-value">{{ amberCount }}</div>
+      <div class="sc-kpi-label">AMBER Indicators</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="sc-kpi-card score-red">
+      <div class="sc-kpi-value">{{ redCount }}</div>
+      <div class="sc-kpi-label">RED Indicators</div>
+    </div>
+  </div>
+</div>
+
+<!-- Programme Info -->
+<div *ngIf="programme" class="card card-modern mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 fw-bold" style="color:var(--primary-enterprise)">
+      <i class="fas fa-clipboard-list me-2"></i>{{ programme.name }}
+    </h6>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-4"><strong class="text-muted small">SCOPE</strong><p>{{ programme.scope }}</p></div>
+      <div class="col-md-4"><strong class="text-muted small">OBJECTIVES</strong><p>{{ programme.objectives }}</p></div>
+      <div class="col-md-4"><strong class="text-muted small">EVALUATION CRITERIA</strong><p>{{ programme.evaluationCriteria }}</p></div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-3"><strong class="text-muted small">LAST REVIEW</strong><p>{{ programme.lastReviewDate }}</p></div>
+      <div class="col-md-3"><strong class="text-muted small">NEXT REVIEW</strong><p>{{ programme.nextReviewDate }}</p></div>
+      <div class="col-md-3"><strong class="text-muted small">REVIEW FREQUENCY</strong><p>{{ programme.reviewFrequency }}</p></div>
+      <div class="col-md-3"><strong class="text-muted small">OWNER</strong><p>{{ programme.ownerName }}</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- Domain Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-4 col-md-6" *ngFor="let d of domains">
+    <div class="domain-card domain-{{ d.ragStatus.toLowerCase() }}">
+      <div class="domain-header">
+        <span class="domain-control">{{ d.controlPrefix }}</span>
+        <span class="rag-pill rag-{{ d.ragStatus.toLowerCase() }}">{{ d.ragStatus }}</span>
+      </div>
+      <div class="domain-name">{{ d.domain }}</div>
+      <div class="domain-bar-wrap">
+        <div class="domain-bar" [style.width.%]="d.compliancePct" [ngClass]="'bar-'+d.ragStatus.toLowerCase()"></div>
+      </div>
+      <div class="domain-stats">
+        <span class="stat-green">{{ d.greenCount }} GREEN</span>
+        <span class="stat-amber">{{ d.amberCount }} AMBER</span>
+        <span class="stat-red">{{ d.redCount }} RED</span>
+        <span class="stat-pct">{{ d.compliancePct }}%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Critical Indicators Table -->
+<div *ngIf="criticalIndicators.length > 0" class="card card-modern mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 fw-bold text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Attention Required — RED Indicators</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr><th>Indicator</th><th>Category</th><th>Value</th><th>RAG</th><th>Interpretation</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of criticalIndicators">
+            <td class="fw-bold">{{ item.indicator.name }}</td>
+            <td>{{ item.indicator.category }}</td>
+            <td>{{ item.evaluation.value }} {{ item.indicator.valueUnit }}</td>
+            <td><span class="rag-pill rag-red">RED</span></td>
+            <td class="small text-muted">{{ item.indicator.indicatorInterpretation | slice:0:80 }}...</td>
+            <td><a [routerLink]="['/indicator', item.indicator.id]" class="btn btn-sm btn-outline-primary">Details</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

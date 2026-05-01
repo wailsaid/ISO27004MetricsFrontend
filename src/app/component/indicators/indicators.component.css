@@ -1,11 +1,10 @@
-.modal-fullscreen{
-    max-width: 100%;
-    max-height: 100%;
-    margin: 0;
-}
+.modal-fullscreen { max-width: 100%; max-height: 100%; margin: 0; }
+.mat-horizontal-stepper-header-container { display: none !important; }
 
-  .mat-horizontal-stepper-header-container{
-    display: none !important;
-  }
-  .col-md-4{
-  }
+.rag-pill { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: .72rem; font-weight: 700; }
+.rag-green { background: #d1fae5; color: #065f46; }
+.rag-amber { background: #fef3c7; color: #92400e; }
+.rag-red   { background: #fee2e2; color: #991b1b; }
+.rag-gray  { background: #f3f4f6; color: #6b7280; }
+
+.construct-id-badge { background: #1e40af; color: #fff; font-size: .68rem; padding: 1px 7px; border-radius: 8px; font-weight: 700; }

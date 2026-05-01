@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
-import { Observable, of, share, delay } from 'rxjs';
-import { host } from "src/app/app.component";
+import { Observable, map } from 'rxjs';
+import { apiBase } from "src/app/app.component";
 import { Indicator } from "../indicator-Evaluation/indicator.service";
 
 export type Permission =
@@ -95,74 +95,56 @@ export interface Collector {
   indicator: Indicator[];
 }
 
-const MOCK_USERS: User[] = [
-  { id: 1,  username: 'admin',       fullName: 'Alice Martin',      email: 'admin@company.com',       role: 'ADMIN',     departmentId: 1, departmentName: 'IT Security',    status: 'ACTIVE',    lastLogin: '2026-04-19T09:12:00', createdAt: '2024-01-10' },
-  { id: 2,  username: 'jsmith',      fullName: 'James Smith',       email: 'j.smith@company.com',     role: 'MANAGER',   departmentId: 2, departmentName: 'Risk Management',status: 'ACTIVE',    lastLogin: '2026-04-18T14:30:00', createdAt: '2024-02-15' },
-  { id: 3,  username: 'mwilson',     fullName: 'Maria Wilson',      email: 'm.wilson@company.com',    role: 'MANAGER',   departmentId: 3, departmentName: 'Compliance',     status: 'ACTIVE',    lastLogin: '2026-04-17T11:00:00', createdAt: '2024-02-20' },
-  { id: 4,  username: 'collector1',  fullName: 'Carlos Rivera',     email: 'c.rivera@company.com',    role: 'COLLECTOR', departmentId: 1, departmentName: 'IT Security',    status: 'ACTIVE',    lastLogin: '2026-04-19T08:45:00', createdAt: '2024-03-01' },
-  { id: 5,  username: 'collector2',  fullName: 'Sophie Dubois',     email: 's.dubois@company.com',    role: 'COLLECTOR', departmentId: 2, departmentName: 'Risk Management',status: 'ACTIVE',    lastLogin: '2026-04-16T10:20:00', createdAt: '2024-03-05' },
-  { id: 6,  username: 'tnguyen',     fullName: 'Thanh Nguyen',      email: 't.nguyen@company.com',    role: 'COLLECTOR', departmentId: 4, departmentName: 'Operations',     status: 'ACTIVE',    lastLogin: '2026-04-15T09:00:00', createdAt: '2024-03-10' },
-  { id: 7,  username: 'bkumar',      fullName: 'Banit Kumar',       email: 'b.kumar@company.com',     role: 'USER',      departmentId: 3, departmentName: 'Compliance',     status: 'ACTIVE',    lastLogin: '2026-04-14T13:15:00', createdAt: '2024-04-01' },
-  { id: 8,  username: 'lpatel',      fullName: 'Lena Patel',        email: 'l.patel@company.com',     role: 'USER',      departmentId: 5, departmentName: 'HR',             status: 'INACTIVE',  lastLogin: '2026-03-20T10:00:00', createdAt: '2024-04-10' },
-  { id: 9,  username: 'rchang',      fullName: 'Rachel Chang',      email: 'r.chang@company.com',     role: 'COLLECTOR', departmentId: 1, departmentName: 'IT Security',    status: 'ACTIVE',    lastLogin: '2026-04-18T16:45:00', createdAt: '2024-05-01' },
-  { id: 10, username: 'okafor',      fullName: 'Emeka Okafor',      email: 'e.okafor@company.com',    role: 'MANAGER',   departmentId: 5, departmentName: 'HR',             status: 'SUSPENDED', lastLogin: '2026-04-01T09:30:00', createdAt: '2024-05-15' },
-];
-
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-  private url: string = `http://${host}:8080/api/v1/user`;
+  private url = `${apiBase}/api/v1/user`;
 
   constructor(private http: HttpClient) {}
 
   getUsers(): Observable<User[]> {
-    return of([...MOCK_USERS]).pipe(delay(200), share());
+    return this.http.get<User[]>(this.url);
   }
 
   getRoles(): Observable<Role[]> {
-    const roles = DEFAULT_ROLES.map(r => ({
-      ...r,
-      userCount: MOCK_USERS.filter(u => u.role === r.name).length
-    }));
-    return of(roles).pipe(delay(100), share());
+    return this.getUsers().pipe(
+      map(users => DEFAULT_ROLES.map(r => ({
+        ...r,
+        userCount: users.filter(u => u.role === r.name).length
+      })))
+    );
   }
 
-  RestUserP(id: number | undefined, np: string) {
-    return of(null).pipe(share());
+  RestUserP(id: number | undefined, np: string): Observable<User> {
+    return this.http.put<User>(`${this.url}/reset/${id}`, np);
   }
 
-  setCollector(c: Collector) {
-    return of(c).pipe(share());
+  setCollector(c: Collector): Observable<Collector> {
+    return this.http.post<Collector>(`${this.url}/collector`, c);
   }
 
-  updateCollector(c: Collector) {
-    return of(c).pipe(share());
+  updateCollector(c: Collector): Observable<Collector> {
+    return this.http.put<Collector>(`${this.url}/collector`, c);
   }
 
   getCollectors(): Observable<Collector[]> {
-    const collectors = MOCK_USERS
-      .filter(u => u.role === 'COLLECTOR')
-      .map((u, i) => ({ id: i + 1, collector: u, indicator: [] }));
-    return of(collectors).pipe(delay(200), share());
+    return this.http.get<Collector[]>(`${this.url}/collector`);
   }
 
-  getCollector(id: number | undefined) {
-    return of({ id: 1, collector: MOCK_USERS[3], indicator: [] } as Collector).pipe(share());
+  getCollector(id: number | undefined): Observable<Collector> {
+    return this.http.get<Collector>(`${this.url}/collector/${id}`);
   }
 
-  deleteUser(user: User): Observable<User> {
-    return of(user).pipe(share());
+  deleteUser(user: User): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${user.id}`);
   }
 
   createUser(newuser: User): Observable<User> {
-    newuser.id = Math.floor(Math.random() * 1000) + 100;
-    newuser.status = newuser.status || 'ACTIVE';
-    newuser.createdAt = new Date().toISOString().substring(0, 10);
-    return of(newuser).pipe(share());
+    return this.http.post<User>(this.url, newuser);
   }
 
   updateUser(user: User): Observable<User> {
-    return of(user).pipe(share());
+    return this.http.put<User>(this.url, user);
   }
 }

@@ -1,0 +1,25 @@
+.lib-card { background: #fff; border-radius: 12px; padding: 16px; border: 2px solid #e5e7eb; cursor: pointer; transition: all .15s; margin-bottom: 0; }
+.lib-card:hover { border-color: #2563eb; box-shadow: 0 4px 12px rgba(37,99,235,.12); }
+.lib-card-selected { border-color: #2563eb; background: #eff6ff; }
+.lib-card-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.lib-id-badge { background: #1e3a5f; color: #fff; font-size: .7rem; padding: 2px 8px; border-radius: 8px; font-weight: 700; }
+.lib-cat-badge { font-size: .7rem; padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+.cat-training  { background: #dbeafe; color: #1e40af; }
+.cat-access    { background: #fce7f3; color: #831843; }
+.cat-incident  { background: #fee2e2; color: #991b1b; }
+.cat-governance{ background: #f3e8ff; color: #5b21b6; }
+.cat-system    { background: #d1fae5; color: #065f46; }
+.cat-physical  { background: #fef3c7; color: #78350f; }
+.cat-monitoring{ background: #e0f2fe; color: #0c4a6e; }
+.cat-supplier  { background: #f0fdf4; color: #14532d; }
+.cat-default   { background: #f3f4f6; color: #374151; }
+.lib-card-name { font-size: .95rem; font-weight: 700; color: #1f2937; margin-bottom: 4px; }
+.lib-card-control { font-size: .78rem; color: #6b7280; margin-bottom: 6px; }
+.lib-card-desc { font-size: .8rem; margin-bottom: 8px; min-height: 40px; }
+.lib-card-meta { font-size: .75rem; color: #6b7280; margin-bottom: 8px; }
+.lib-card-criteria { display: flex; gap: 4px; flex-wrap: wrap; }
+.dc-pill { font-size: .7rem; padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+.dc-pill-green { background: #d1fae5; color: #065f46; }
+.dc-pill-amber { background: #fef3c7; color: #92400e; }
+.dc-pill-red   { background: #fee2e2; color: #991b1b; }
+.lib-template-preview { background: #f9fafb; border-radius: 8px; padding: 12px 16px; border: 1px solid #e5e7eb; }

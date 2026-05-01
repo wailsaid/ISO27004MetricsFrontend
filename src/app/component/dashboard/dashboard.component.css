@@ -46,3 +46,17 @@
 .eval-unit { font-size: .875rem; }
 .eval-targets { display: flex; align-items: center; }
 .eval-dates { display: flex; align-items: center; flex-wrap: wrap; }
+
+/* RAG pills in eval cards */
+.rag-pill-sm { font-size: .72rem; padding: 2px 8px; border-radius: 8px; font-weight: 700; }
+.rag-green { background: #d1fae5; color: #065f46; }
+.rag-amber { background: #fef3c7; color: #92400e; }
+.rag-red   { background: #fee2e2; color: #991b1b; }
+
+/* Overdue / due-soon list */
+.overdue-list { display: flex; flex-direction: column; }
+.overdue-item { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid #f3f4f6; }
+.overdue-item:last-child { border-bottom: none; }
+.overdue-name { font-size: .875rem; font-weight: 600; flex: 1; }
+.overdue-meta { font-size: .75rem; white-space: nowrap; }
+.btn-xs { padding: 2px 8px; font-size: .72rem; }

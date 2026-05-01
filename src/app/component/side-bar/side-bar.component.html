@@ -7,78 +7,102 @@
 
   <hr class="sidebar-divider-light mx-3">
 
-  <!-- MAIN NAV -->
+  <!-- MAIN -->
   <div class="sidebar-section-label">Main</div>
 
   <li class="nav-item" [class.active]="isActive('dashboard') || currentRoute === '/'">
     <a class="nav-link" routerLink="dashboard">
-      <i class="fas fa-fw fa-chart-pie"></i>
-      <span>Dashboard</span>
+      <i class="fas fa-fw fa-chart-pie"></i><span>Dashboard</span>
+    </a>
+  </li>
+
+  <li class="nav-item" [class.active]="isActive('scorecard')">
+    <a class="nav-link" routerLink="scorecard">
+      <i class="fas fa-fw fa-tachometer-alt"></i><span>Scorecard</span>
     </a>
   </li>
 
   <li class="nav-item" [class.active]="isActive('indicator') && !isActive('indicator/')">
     <a class="nav-link" routerLink="indicator">
-      <i class="fas fa-fw fa-tachometer-alt"></i>
-      <span>Indicators</span>
+      <i class="fas fa-fw fa-chart-bar"></i><span>Indicators</span>
     </a>
   </li>
 
   <li class="nav-item" [class.active]="isActive('departement')">
     <a class="nav-link" routerLink="departement">
-      <i class="fas fa-fw fa-building"></i>
-      <span>Departments</span>
+      <i class="fas fa-fw fa-building"></i><span>Departments</span>
     </a>
   </li>
 
-  <!-- Collector only -->
+  <!-- Measurement section (admin + manager) -->
+  <ng-container *ngIf="authService.isAdminOrManager()">
+    <hr class="sidebar-divider-light mx-3">
+    <div class="sidebar-section-label">Measurement</div>
+
+    <li class="nav-item" [class.active]="isActive('indicator-library')">
+      <a class="nav-link" routerLink="indicator-library">
+        <i class="fas fa-fw fa-book-open"></i><span>Indicator Library</span>
+      </a>
+    </li>
+
+    <li class="nav-item" [class.active]="isActive('programme')">
+      <a class="nav-link" routerLink="programme">
+        <i class="fas fa-fw fa-clipboard-list"></i><span>Measurement Programme</span>
+      </a>
+    </li>
+
+    <li class="nav-item" [class.active]="isActive('alerts')">
+      <a class="nav-link" routerLink="alerts">
+        <i class="fas fa-fw fa-bell"></i><span>Alerts</span>
+        <span class="sidebar-badge" *ngIf="alertCount > 0">{{ alertCount }}</span>
+      </a>
+    </li>
+  </ng-container>
+
+  <!-- Collector tasks -->
   <ng-container *ngIf="authService.isCollector()">
     <hr class="sidebar-divider-light mx-3">
     <div class="sidebar-section-label">My Tasks</div>
     <li class="nav-item" [class.active]="isActive('evaliation-task')">
       <a class="nav-link" routerLink="evaliation-task">
-        <i class="fas fa-fw fa-clipboard-check"></i>
-        <span>Evaluation Tasks</span>
+        <i class="fas fa-fw fa-clipboard-check"></i><span>Collection Tasks</span>
       </a>
     </li>
   </ng-container>
 
-  <!-- Admin + Manager -->
+  <!-- Admin only -->
   <ng-container *ngIf="authService.isAdminOrManager()">
     <hr class="sidebar-divider-light mx-3">
     <div class="sidebar-section-label">Administration</div>
 
     <li class="nav-item" [class.active]="isActive('apps')">
       <a class="nav-link" routerLink="apps">
-        <i class="fas fa-fw fa-cubes"></i>
-        <span>Applications</span>
+        <i class="fas fa-fw fa-cubes"></i><span>Applications</span>
       </a>
     </li>
 
     <li class="nav-item" [class.active]="isActive('user')">
       <a class="nav-link" routerLink="user">
-        <i class="fas fa-fw fa-users-gear"></i>
-        <span>Users &amp; Roles</span>
+        <i class="fas fa-fw fa-users-gear"></i><span>Users &amp; Roles</span>
       </a>
     </li>
   </ng-container>
 
   <hr class="sidebar-divider-light mx-3 mt-auto">
 
-  <!-- User Profile Section -->
+  <!-- User Profile -->
   <div class="sidebar-profile" *ngIf="currentUser">
-    <div class="profile-avatar">{{getInitials(currentUser)}}</div>
+    <div class="profile-avatar">{{ getInitials(currentUser) }}</div>
     <div class="profile-info">
-      <div class="profile-name">{{currentUser.fullName || currentUser.username}}</div>
-      <span class="profile-role-badge">{{authService.getRoleLabel()}}</span>
+      <div class="profile-name">{{ currentUser.fullName || currentUser.username }}</div>
+      <span class="profile-role-badge">{{ authService.getRoleLabel() }}</span>
     </div>
   </div>
 
   <!-- Logout -->
   <li class="nav-item">
     <a class="nav-link nav-link-logout" (click)="logout()" style="cursor:pointer">
-      <i class="fas fa-fw fa-arrow-right-from-bracket"></i>
-      <span>Sign Out</span>
+      <i class="fas fa-fw fa-arrow-right-from-bracket"></i><span>Sign Out</span>
     </a>
   </li>
 

@@ -1,0 +1,100 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h1 class="h3 mb-0" style="color:var(--text-main)">Indicator Library</h1>
+    <p class="text-muted small mb-0">ISO 27004:2009 Annex B — Pre-built Measurement Construct Templates</p>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="card card-modern mb-4">
+  <div class="card-body py-3">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <div class="input-group">
+          <span class="input-group-text"><i class="fas fa-search"></i></span>
+          <input type="text" class="form-control" placeholder="Search by name or control reference..."
+            [(ngModel)]="searchTerm" (ngModelChange)="filter()">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <select class="form-select" [(ngModel)]="selectedCategory" (ngModelChange)="filter()">
+          <option value="">All Categories</option>
+          <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      <div class="col-md-3 text-muted small">{{ filteredTemplates.length }} template(s)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Template Grid -->
+<div class="row g-3">
+  <div class="col-xl-4 col-md-6" *ngFor="let t of filteredTemplates">
+    <div class="lib-card" [class.lib-card-selected]="selectedTemplate?.id === t.id" (click)="selectTemplate(t)">
+      <div class="lib-card-header">
+        <span class="lib-id-badge">{{ t.id }}</span>
+        <span class="lib-cat-badge {{ getCategoryClass(t.category) }}">{{ t.category }}</span>
+      </div>
+      <div class="lib-card-name">{{ t.name }}</div>
+      <div class="lib-card-control"><i class="fas fa-link me-1 text-muted"></i>{{ t.controlReference }}</div>
+      <div class="lib-card-desc text-muted small">{{ t.description }}</div>
+      <div class="lib-card-meta">
+        <span><i class="fas fa-calendar-alt me-1"></i>{{ t.defaultCollectionFrequency }}</span>
+        <span class="ms-3"><i class="fas fa-chart-bar me-1"></i>{{ t.reportingFormat }}</span>
+      </div>
+      <div class="lib-card-criteria">
+        <span class="dc-pill dc-pill-green">GREEN ≥ {{ t.decisionCriteriaGreen }}</span>
+        <span class="dc-pill dc-pill-amber">AMBER ≥ {{ t.decisionCriteriaAmber }}</span>
+        <span class="dc-pill dc-pill-red">RED &lt; {{ t.decisionCriteriaAmber }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Selected Template — Customization Panel -->
+<div *ngIf="selectedTemplate" class="card card-modern mt-4">
+  <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <h6 class="m-0 fw-bold" style="color:var(--primary-enterprise)">
+      <i class="fas fa-cog me-2"></i>Customise & Create — {{ selectedTemplate.name }} ({{ selectedTemplate.id }})
+    </h6>
+    <button class="btn btn-sm btn-outline-secondary" (click)="selectedTemplate = null">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group form-floating mb-3">
+          <input type="number" class="form-control" placeholder="" name="libTarget" [(ngModel)]="targetValue" id="libTarget">
+          <label for="libTarget">GREEN Threshold (Target Value)</label>
+        </div>
+        <div class="form-group form-floating mb-3">
+          <input type="number" class="form-control" placeholder="" name="libAccept" [(ngModel)]="acceptableValue" id="libAccept">
+          <label for="libAccept">AMBER Threshold (Acceptable Value)</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group form-floating mb-3">
+          <input type="text" class="form-control" placeholder="" name="libOwner" [(ngModel)]="infoOwner" id="libOwner">
+          <label for="libOwner">Information Owner</label>
+        </div>
+        <div class="form-group form-floating mb-3">
+          <input type="text" class="form-control" placeholder="" name="libCollector" [(ngModel)]="infoCollector" id="libCollector">
+          <label for="libCollector">Information Collector</label>
+        </div>
+      </div>
+    </div>
+    <div class="lib-template-preview mt-2">
+      <div class="row">
+        <div class="col-md-4"><strong class="text-muted small">ANALYTICAL MODEL</strong><p class="small">{{ selectedTemplate.analyticalModel }}</p></div>
+        <div class="col-md-4"><strong class="text-muted small">MEASUREMENT FUNCTION</strong><code class="small">{{ selectedTemplate.measurementFunction }}</code></div>
+        <div class="col-md-4"><strong class="text-muted small">OBJECT OF MEASUREMENT</strong><p class="small">{{ selectedTemplate.objectOfMeasurement }}</p></div>
+      </div>
+    </div>
+    <div class="text-end mt-3">
+      <button class="btn btn-success" (click)="useTemplate()">
+        <i class="fas fa-plus me-1"></i>Create Indicator from Template
+      </button>
+    </div>
+  </div>
+</div>

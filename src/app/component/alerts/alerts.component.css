@@ -1,0 +1,25 @@
+.unread-badge { background: #dc2626; color: #fff; font-size: .75rem; padding: 3px 10px; border-radius: 10px; font-weight: 700; }
+.alert-filter-btn { padding: 5px 14px; border: 1px solid #e5e7eb; background: #fff; border-radius: 8px; font-size: .82rem; cursor: pointer; transition: all .15s; }
+.alert-filter-btn.active { background: #1e3a5f; color: #fff; border-color: #1e3a5f; }
+.sev-high-btn.active { background: #dc2626; border-color: #dc2626; }
+.sev-medium-btn.active { background: #d97706; border-color: #d97706; }
+
+.alert-list { display: flex; flex-direction: column; gap: 10px; }
+.alert-card { background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb; display: flex; gap: 14px; align-items: flex-start; box-shadow: 0 1px 4px rgba(0,0,0,.05); transition: opacity .15s; }
+.alert-card.alert-read { opacity: .6; }
+.alert-icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.sev-high   { background: #fee2e2; color: #dc2626; }
+.sev-medium { background: #fef3c7; color: #d97706; }
+.sev-low    { background: #d1fae5; color: #16a34a; }
+.alert-card-body { flex: 1; min-width: 0; }
+.alert-card-header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+.alert-type-badge { background: #1e3a5f; color: #fff; font-size: .72rem; padding: 2px 8px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+.alert-severity { font-size: .72rem; padding: 2px 8px; border-radius: 8px; font-weight: 700; }
+.sev-high   { background: #fee2e2; color: #991b1b; }
+.sev-medium { background: #fef3c7; color: #78350f; }
+.sev-low    { background: #d1fae5; color: #065f46; }
+.alert-indicator-link a { color: #2563eb; text-decoration: none; font-size: .85rem; font-weight: 600; }
+.alert-time { color: #9ca3af; font-size: .75rem; }
+.alert-message { font-size: .88rem; color: #374151; margin-bottom: 6px; }
+.alert-action { font-size: .82rem; color: #6b7280; }
+.alert-card-actions { flex-shrink: 0; }
